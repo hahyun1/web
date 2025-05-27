@@ -7,6 +7,7 @@ body {
     color: #222;
 }
 
+
 header {
     background: #5a6fa7;
     color: #fff;
@@ -134,19 +135,25 @@ nav a:hover {
     font-weight: bold;
 }
 
+/*메인 비주얼*/
 
-/*셉션 구현*/
-section>div>img{
-    width: 200px;
+section > div {
+    height: 500px; /* 너가 원래 설정한 높이 */
+    margin: 100px auto; /* 좌우 margin을 auto로 해서 이 div 박스 자체를 가운데 정렬 */
+
+    /* 이미지를 div 박스 안에서 정가운데로 보내기! */
+    display: flex;          
+    justify-content: center;  
+    align-items: center;
     
-}
-section>div{
-    text-align: center;
-    margin: 200px;
-}
+  }
+  section > div> img {
+    width: 300px; 
+    height: auto; 
+    align-items: center;
+    
+  }
 
-
-/* 푸터 */
 .copyright {
     text-align: center;
     color: #292929;
