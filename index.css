@@ -46,6 +46,19 @@ nav ul {
     list-style: none;
     gap: 32px;
 }
+
+nav ul.main-menu > li > a {
+    color: #fff;
+    padding: 10px 20px;
+    display: block;
+    border-radius: 10px;
+    transition: background 0.2s, color 0.2s;
+}
+
+nav ul.main-menu > li:hover > a {
+    background-color: #2f3e679f;
+}
+
 nav a {
     color: #fff;
     text-decoration: none;
@@ -71,6 +84,58 @@ nav a:hover {
     background: #ffb74d;
     color: #fff;
 }
+
+
+/* 드롭다운 메뉴 스타일 */
+.main-menu {
+    position: relative;
+}
+
+.main-menu > li {
+    position: relative;
+}
+
+.main-menu > li:hover .submenu {
+    display: block;
+}
+
+.submenu {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background-color: #6d80b4;
+    padding: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 999;
+}
+
+.submenu li {
+    width: 200px;
+    padding: 8px 20px;
+}
+
+.submenu li a {
+    color: #fff;
+    font-size: 0.95rem;
+    text-decoration: none;
+    display: block;
+}
+
+
+/* 드롭다운 항목 hover */
+.submenu li a:hover {
+    color: #ffb74d;
+    border-radius: 6px;
+}
+
+/* 드롭다운 항목 active (클릭 상태일 때) */
+.submenu li a:active {
+    color: #778ece;
+    font-weight: bold;
+}
+
 
 /* 메인 비주얼 */
 .main-visual {

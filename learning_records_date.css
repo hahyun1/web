@@ -133,69 +133,12 @@ nav a:hover {
     color: #778ece;
     font-weight: bold;
 }
-/*상단 헤더 끝*/
 
 
-.intro-section {
-    max-width: 600px;
-    margin: 40px auto;
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(90,111,167,0.10);
-    padding: 36px 28px 32px 28px;
-}
-
-.intro-section h1 {
-    color: #5a6fa7;
-    font-size: 2rem;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.intro-menu ul {
-    display: flex;
-    justify-content: center;
-    gap: 26px;
-    list-style: none;
-    margin-bottom: 28px;
-    padding: 0;
-}
-
-.intro-menu a {
-    color: #5a6fa7;
-    font-weight: 600;
-    text-decoration: none;
-    font-size: 1.05rem;
-    transition: color 0.2s;
-}
-
-.intro-menu a:hover {
-    color: #ffb74d;
-}
-
-.intro-content section {
-    margin-bottom: 24px;
-}
-
-.intro-content h2 {
-    color: #4cc1b7;
-    font-size: 1.15rem;
-    margin-bottom: 8px;
-}
-
-.intro-content ul {
-    list-style: disc inside;
-    margin-bottom: 0;
-    padding-left: 10px;
-}
-
-.intro-content p {
-    font-size: 1rem;
-    color: #333;
-}
 
 
-/* 푸터 */
+
+
 .copyright {
     text-align: center;
     color: #292929;
