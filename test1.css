@@ -1,20 +1,19 @@
-
 /* 기본 설정 */
 body {
     margin: 0;
     padding: 0;
     background-color: #ffffff;
     overflow-x: hidden;
-}
-
-/* 로고 링크 */
-.icon_link {
+  }
+  
+  /* 로고 링크 */
+  .icon_link {
     display: inline-block;
     margin: 0 10px;
-}
-
-/* 상단 바 */
-.Top_bar {
+  }
+  
+  /* 상단 바 */
+  .Top_bar {
     background-color: #fff8dc;
     display: flex;
     justify-content: space-between;
@@ -23,15 +22,15 @@ body {
     padding: 0 2vw;
     gap: 2vw;
     flex-wrap: nowrap;
-}
-
-/* 메뉴 그룹 */
-.menu-group {
+  }
+  
+  /* 메뉴 그룹 */
+  .menu-group {
     flex: 1;
     min-width: 0;
-}
-
-.menu-group ul {
+  }
+  
+  .menu-group ul {
     display: flex;
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -41,13 +40,13 @@ body {
     padding: 0;
     list-style: none;
     overflow: hidden;
-}
-
-.menu-group ul li {
+  }
+  
+  .menu-group ul li {
     flex-shrink: 1;
-}
-
-.menu-group ul li a {
+  }
+  
+  .menu-group ul li a {
     display: block;
     text-decoration: none;
     color: #333;
@@ -55,43 +54,43 @@ body {
     padding: 0.5vw 1vw;
     font-size: clamp(10px, 2vw, 16px);
     white-space: nowrap;
-}
-
-.menu-group ul li a:hover {
+  }
+  
+  .menu-group ul li a:hover {
     background: #f0e6d2;
-}
-
-/* 오른쪽 영역 (검색, 로그인) */
-.right-group {
+  }
+  
+  /* 오른쪽 영역 (검색, 로그인) */
+  .right-group {
     display: flex;
     align-items: center;
     gap: 1vw;
     flex-shrink: 0;
-}
-
-.search-bar {
+  }
+  
+  .search-bar {
     display: flex;
     align-items: center;
-}
-
-.search-bar input {
+  }
+  
+  .search-bar input {
     padding: 6px;
     font-size: 0.9em;
     width: clamp(100px, 12vw, 200px);
     min-width: 60px;
     border: 1px solid #ccc;
     border-radius: 4px;
-}
-
-.login-group {
+  }
+  
+  .login-group {
     display: flex;
     gap: 0.6vw;
     list-style: none;
     margin: 0;
     padding: 0;
-}
-
-.login-group li a {
+  }
+  
+  .login-group li a {
     text-decoration: none;
     color: #333;
     font-weight: 600;
@@ -100,40 +99,78 @@ body {
     border-radius: 4px;
     white-space: nowrap;
     transition: background 0.2s;
-}
-
-.login-group li a:hover {
+  }
+  
+  .login-group li a:hover {
     background: #f0e6d2;
-}
-
-
-/* 푸터 */
-.footer {
+  }
+  
+  /* 진행 바 컨테이너 */
+  #progressContainer {
+    width: 100%;
+    max-width: 600px;
+    margin: 30px auto 10px auto;
+    background: #ffdff2;
+    border-radius: 12px;
+    height: 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    position: relative;
+  }
+  
+  /* 진행 바 */
+  #progressBar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff97cb 100%);
+    border-radius: 12px;
+    transition: width 0.3s;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* 진행률 텍스트 */
+  #progressLabel {
+    position: absolute;
+    right: 12px;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 0.95em;
+    color: #444;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  
+  /* 푸터 */
+  .footer {
     background-color: #edc7ae;
     padding: 20px;
     text-align: center;
     font-size: 14px;
     border-top: 1px solid #ccc;
-}
-
-/* 질문/결과 공통 섹션 스타일 */
-.section {
+    margin-top: auto;
+  }
+  
+  /* 질문/결과 공통 섹션 스타일 */
+  .section {
     padding: 40px 20px;
     max-width: 600px;
     margin: 0 auto;
     text-align: center;
-}
-
-/* 질문 텍스트 */
-#questionText {
+  }
+  
+  /* 질문 텍스트 */
+  #questionText {
     font-size: 1.4em;
     font-weight: bold;
     margin-bottom: 30px;
     color: #333;
-}
-
-/* 선택지 버튼 */
-#options button {
+  }
+  
+  /* 선택지 버튼 */
+  #options button {
     display: block;
     width: 100%;
     max-width: 400px;
@@ -146,15 +183,15 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-#options button:hover {
+  }
+  
+  #options button:hover {
     background-color: #ffc0e6;
     transform: translateY(-2px);
-}
-
-/* 결과 보기 버튼 */
-#submitContainer button {
+  }
+  
+  /* 결과 보기 버튼 */
+  #submitContainer button {
     padding: 14px 32px;
     background-color: #ff69b4;
     color: #fff;
@@ -164,59 +201,47 @@ body {
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-
-#submitContainer button:hover {
+  }
+  
+  #submitContainer button:hover {
     background-color: #ff1493;
     transform: translateY(-2px);
-}
-
-#submitContainer button:active {
+  }
+  
+  #submitContainer button:active {
     background-color: #c71585;
     transform: translateY(0);
-}
-
-/* 결과 텍스트 */
-#resultText {
+  }
+  
+  /* 결과 텍스트 */
+  #resultText {
     font-size: 1.3em;
     color: #444;
-    background-color: #fff7f0;
+    background-color: #ffffff;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
     line-height: 1.6;
-}
-
-
-/* 전체 페이지 레이아웃 설정 (footer 밀착을 위해 필요) */
-html, body {
+  }
+  
+  /* 전체 페이지 레이아웃 설정 (footer 밀착을 위해 필요) */
+  html, body {
     height: 100%;
     display: flex;
     flex-direction: column;
-}
-
-/* 메인 콘텐츠가 남는 공간을 채우도록 */
-body > .section {
+  }
+  
+  /* 메인 콘텐츠가 남는 공간을 채우도록 */
+  body > .section {
     flex: 1;
-}
-
-/* footer를 하단에 고정 */
-.footer {
-    background-color: #edc7ae;
-    padding: 20px;
-    text-align: center;
-    font-size: 14px;
-    border-top: 1px solid #ccc;
-    margin-top: auto;
-}
-
-/* 결과 섹션은 기본적으로 숨김 처리 */
-#result {
+  }
+  
+  /* 결과 섹션은 기본적으로 숨김 처리 */
+  #result {
     display: none;
-}
-
-.restart-btn {
+  }
+  
+  .restart-btn {
     margin-top: 32px;
     padding: 14px 36px;
     background-color: #ff69b4;
@@ -229,14 +254,13 @@ body > .section {
     transition: background-color 0.2s, transform 0.2s;
     box-shadow: 2px 2px 6px rgba(0,0,0,0.14);
     letter-spacing: 1px;
-}
-.restart-btn:hover {
+  }
+  .restart-btn:hover {
     background-color: #ff1493;
     transform: translateY(-2px);
-}
-.restart-btn:active {
+  }
+  .restart-btn:active {
     background-color: #c71585;
     transform: translateY(0);
-}
-
-
+  }
+  
