@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>테토남 에겐녀 테스트</title>
+  <link rel="stylesheet" href="test1.css">
+</head>
+
+<body>
+
+    <header>  
+        <nav class="Top_bar">
+            
+            <a class="icon_link" href="home.html"><img src= "img/TestTalk.png" width="100vw height="auto"></a>
+            <div class="menu-group">
+                <ul>
+                    <li><a href="#">연애</a></li>
+                    <li><a href="#">사회생활</a></li>
+                    <li><a href="#">성격</a></li>
+                    <li><a href="#">운세</a></li>
+                    <li><a href="#">커뮤니티</a></li>
+                </ul>
+            </div>
+            <div class="right-group">
+                <div class="search-bar">
+                    <input type="text" placeholder="검색하기">
+                </div>
+                <ul class="login-group">
+                    <li><a href="#">로그인</a></li>
+                    <li><a href="#">회원가입</a></li>
+                </ul>
+            </div>
+        </nav>
+          
+    </header>
+    
+    
+<!-- 질문 화면 -->
+<div id="question" class="section active">
+    <div id="questionText"></div>
+    <div id="options"></div>
+    <div id="submitContainer" style="display:none; margin-top: 20px;">
+      <button onclick="showResult()">결과 보기</button>
+    </div>
+  </div>
+
+<!-- 결과 화면 -->
+<div id="result" class="section">
+    <br>
+    <div id="resultText"></div>
+    <br><br>
+    <a href="test1.html" class="restart-btn"">다시하기</a>
+</div>
+
+<footer class="footer">
+    테스트톡 문의: 2301491@kunsan.ac.kr
+</footer>
+
+<script src="test1.js"></script>
+</body>
+</html>
