@@ -1,0 +1,158 @@
+/* 기본 리셋 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f8f8f8;
+    color: #222;
+}
+
+
+header {
+    background: #5a6fa7;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+    height: 70px;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+.logo a:hover{
+    color:#ffb74d
+}
+
+.logo a,
+.logo a:visited,
+.logo a:active {
+    text-decoration: none;  /* 밑줄 제거 */
+    color: white;
+}
+
+.logo img {
+    width: 70px;
+    height: 70px;
+    margin-right: 0px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+}
+nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+nav a:hover {
+    color: #ffb74d;
+}
+
+.goal a {
+    background: #fff;
+    color: #5a6fa7;
+    padding: 7px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.97rem;
+    transition: background 0.2s, color 0.2s;
+}
+.goal a:hover {
+    background: #ffb74d;
+    color: #fff;
+}
+
+.intro-section {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(90,111,167,0.10);
+    padding: 36px 28px 32px 28px;
+}
+
+.intro-section h1 {
+    color: #5a6fa7;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.intro-menu ul {
+    display: flex;
+    justify-content: center;
+    gap: 26px;
+    list-style: none;
+    margin-bottom: 28px;
+    padding: 0;
+}
+
+.intro-menu a {
+    color: #5a6fa7;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1.05rem;
+    transition: color 0.2s;
+}
+
+.intro-menu a:hover {
+    color: #ffb74d;
+}
+
+.intro-content section {
+    margin-bottom: 24px;
+}
+
+.intro-content h2 {
+    color: #4cc1b7;
+    font-size: 1.15rem;
+    margin-bottom: 8px;
+}
+
+.intro-content ul {
+    list-style: disc inside;
+    margin-bottom: 0;
+    padding-left: 10px;
+}
+
+.intro-content p {
+    font-size: 1rem;
+    color: #333;
+}
+
+
+/* 푸터 */
+.copyright {
+    text-align: center;
+    color: #292929;
+    font-size: 0.95rem;
+    padding: 10px 0 16px 0;
+    border-top: 1px solid #d7dbe7;
+    margin-top: 18px;
+    background-color: #d7d7d7;
+}
+
+/* 반응형 */
+@media (max-width: 900px) {
+    .feature-grid, .records-grid, .footer-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+    }
+    header {
+        flex-direction: column;
+        height: auto;
+        padding: 10px 0;
+        gap: 10px;
+    }
+}
