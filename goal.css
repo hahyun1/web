@@ -1,0 +1,231 @@
+/* 기본 리셋 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f8f8f8;
+    color: #222;
+}
+
+
+header {
+    background: #5a6fa7;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+    height: 70px;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+.logo a:hover{
+    color:#ffb74d
+}
+
+.logo a,
+.logo a:visited,
+.logo a:active {
+    text-decoration: none;  /* 밑줄 제거 */
+    color: white;
+}
+
+.logo img {
+    width: 70px;
+    height: 70px;
+    margin-right: 0px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+}
+
+nav ul.main-menu > li > a {
+    color: #fff;
+    padding: 10px 20px;
+    display: block;
+    border-radius: 10px;
+    transition: background 0.2s, color 0.2s;
+}
+
+nav ul.main-menu > li:hover > a {
+    background-color: #2f3e679f;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+nav a:hover {
+    color: #ffb74d;
+}
+
+.goal a {
+    background: #fff;
+    color: #5a6fa7;
+    padding: 7px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.97rem;
+    transition: background 0.2s, color 0.2s;
+}
+.goal a:hover {
+    background: #ffb74d;
+    color: #fff;
+}
+
+
+/* 드롭다운 메뉴 스타일 */
+.main-menu {
+    position: relative;
+}
+
+.main-menu > li {
+    position: relative;
+}
+
+.main-menu > li:hover .submenu {
+    display: block;
+}
+
+.submenu {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background-color: #6d80b4;
+    padding: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 999;
+}
+
+.submenu li {
+    width: 200px;
+    padding: 8px 20px;
+}
+
+.submenu li a {
+    color: #fff;
+    font-size: 0.95rem;
+    text-decoration: none;
+    display: block;
+}
+
+/* 드롭다운 항목 hover */
+.submenu li a:hover {
+    color: #ffb74d;
+    border-radius: 6px;
+}
+
+/* 드롭다운 항목 active (클릭 상태일 때) */
+.submenu li a:active {
+    color: #778ece;
+    font-weight: bold;
+}
+
+/*메인 비주얼*/
+.dashboard {
+    padding: 40px;
+    background: #fff;
+    border-radius: 20px;
+    margin: 40px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.dashboard h2 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    color: #5a6fa7;
+    border-left: 6px solid #ffb74d;
+    padding-left: 12px;
+}
+
+.goal-status-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.goal-status-table th,
+.goal-status-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.goal-status-table th {
+    background-color: #5a6fa7;
+    color: white;
+    font-weight: 600;
+}
+
+.goal-status-table td {
+    background-color: #f2f6ff;
+    color: #333;
+}
+
+.goal-status-table td:last-child {
+    font-weight: bold;
+    color: #5a6fa7;
+}
+
+.charts img {
+    max-width: 100%;
+    border-radius: 12px;
+}
+.goal-status-group h3 {
+    font-size: 1.3rem;
+    margin: 30px 0 10px 0;
+    color: #333;
+    border-left: 4px solid #5a6fa7;
+    padding-left: 10px;
+}
+
+.in-progress td {
+    background-color: #e1ecff;
+}
+
+.not-completed td {
+    background-color: #ffe6e6;
+    color: #b30000;
+    font-weight: bold;
+}
+
+
+
+.copyright {
+    text-align: center;
+    color: #292929;
+    font-size: 0.95rem;
+    padding: 10px 0 16px 0;
+    border-top: 1px solid #d7dbe7;
+    margin-top: 18px;
+    background-color: #d7d7d7;
+}
+
+/* 반응형 */
+@media (max-width: 900px) {
+    .feature-grid, .records-grid, .footer-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+    }
+    header {
+        flex-direction: column;
+        height: auto;
+        padding: 10px 0;
+        gap: 10px;
+    }
+}

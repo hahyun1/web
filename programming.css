@@ -137,22 +137,79 @@ nav a:hover {
 
 /*메인 비주얼*/
 
-section > div {
-    height: 500px; /* 너가 원래 설정한 높이 */
-    margin: 100px auto; /* 좌우 margin을 auto로 해서 이 div 박스 자체를 가운데 정렬 */
+.algorithm-section {
+    padding: 50px;
+    background: #ffffff;
+    border-radius: 20px;
+    margin: 60px 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
 
-    /* 이미지를 div 박스 안에서 정가운데로 보내기! */
-    display: flex;          
-    justify-content: center;  
-    align-items: center;
-    
-  }
-  section > div> img {
-    width: 300px; 
-    height: auto; 
-    align-items: center;
-    
-  }
+.algorithm-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    color: #5a6fa7;
+    border-left: 6px solid #ffb74d;
+    padding-left: 16px;
+}
+
+.algorithm-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.algorithm-card {
+    background-color: #f4f6fc;
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s;
+}
+
+.algorithm-card:hover {
+    transform: translateY(-4px);
+}
+
+.algorithm-card h3 {
+    font-size: 1.2rem;
+    color: #334e89;
+    margin-bottom: 10px;
+}
+
+.algorithm-card p {
+    font-size: 0.97rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.algorithm-card code {
+    background: #e3e6f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.algo-group {
+    margin-bottom: 40px;
+}
+
+.group-title {
+    font-size: 1.4rem;
+    color: #444;
+    margin-bottom: 16px;
+    border-left: 5px solid #5a6fa7;
+    padding-left: 12px;
+}
+
+.algorithm-card h4 {
+    font-size: 1.15rem;
+    color: #2c3e70;
+    margin-bottom: 8px;
+}
+
+
 
 .copyright {
     text-align: center;
