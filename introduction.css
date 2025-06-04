@@ -84,6 +84,44 @@ nav a:hover {
     color: #fff;
 }
 
+a.project,
+a.project:visited,
+a.project:hover,
+a.project:active {
+    text-decoration: none; /* 밑줄 제거 */
+    background: #fff;
+    color: #5a6fa7;
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.97rem;
+    transition: background 0.2s, color 0.2s;
+}
+a.project:hover {
+    color: #fff;
+}
+
+
+#github a,
+#github a:visited,
+#github a:hover,
+#github a:active {
+    text-decoration: none; /* 모든 상태에서 밑줄 제거 */
+    background: #fff;
+    color: #5a6fa7;
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.97rem;
+    transition: background 0.2s, color 0.2s;
+}
+
+#github a:hover {
+    background: #ffb74d;
+    color: #fff;
+}
+
+
 
 /* 드롭다운 메뉴 스타일 */
 .main-menu {
