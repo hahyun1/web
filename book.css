@@ -218,6 +218,48 @@ nav a:hover {
     padding-left: 8px;
 }
 
+.book-columns {
+    display: block;
+}
+
+
+.box-read,
+.box-willread {
+    width: 100%;
+    background-color: #fffdf9;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px; /* 아래로 간격 추가 */
+}
+
+
+.box-read:hover,
+.box-willread:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.book-title {
+    font-size: 1.4rem;
+    color: #6b5f54;
+    margin-bottom: 24px;
+    border-left: 4px solid #c9ad8b;
+    padding-left: 14px;
+}
+
+/* 반응형 보완 */
+@media (max-width: 900px) {
+    .book-columns {
+        flex-direction: column;
+    }
+
+    .box-read,
+    .box-willread {
+        width: 100%;
+    }
+}
+
+
 
 .copyright {
     text-align: center;
