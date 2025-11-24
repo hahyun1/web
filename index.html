@@ -1,153 +1,461 @@
 <!DOCTYPE html>
-
 <html lang="ko">
-    
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level Up하기</title>
+    <title>JHH Portfolio</title>
     <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-
-    <!-- 상단 헤더 -->
+    <!-- Header -->
     <header>
         <div class="logo">
-            <a href="index.html"><img src="img/logo.png" alt="로고" /></a>
-            <a href="index.html">Home</a>
+            <a href="index.html">JHH Portfolio</a>
         </div>
-        
+
         <nav>
-            <ul class="main-menu">
-                <li><a href="introduction.html">소개</a></li>
-
-                <li>
-                    <a>학습기록</a>
-                    <ul class="submenu">
-                        <li><a href="learning_records_sbj.html">과목</a></li>
-                        
-                    </ul>
-                </li>
-
-                <li>
-                    <a>프로젝트</a>
-                    <ul class="submenu">
-                        <li><a href="pre_project.html">과거 프로젝트</a></li>
-                        <li><a href="current_project.html">현재 프로젝트</a></li>
-                        <li><a href="future_project.html">미래 프로젝트</a></li>
-                    </ul>
-                </li>
-
-                <li>
-                    <a>성장노트</a>
-                    <ul class="submenu">
-                        <li><a href="today_feel.html">오늘의 다짐/느낀점</a></li>
-                    </ul>
-                </li>
+            <ul class="nav-list">
+                <li class="init-ani delay-1"><a href="#about-me"><span class="nav-num">01.</span> About Me</a></li>
+                <li class="init-ani delay-2"><a href="#skills"><span class="nav-num">02.</span> Skills</a></li>
+                <li class="init-ani delay-3"><a href="#projects"><span class="nav-num">03.</span> Projects</a></li>
+                <li class="init-ani delay-4"><a href="#study"><span class="nav-num">04.</span> Study</a></li>
             </ul>
         </nav>
-
-        <div class="goal">
-            <a href="goal.html">나의 목표</a>
-        </div>
-
     </header>
 
-    <!-- 메인 비주얼 -->
-    <section class="main-visual">
-        <div class="main-text">
-            <h2>꾸준한 성장, 체계적 자기개발</h2>
-            <p>나만의 학습기록과 프로젝트를 한눈에!</p>
-        </div>
-    </section>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content"> 
+            <h1>
+                <span class="block-text init-ani delay-5">안녕하세요,</span>
+                <span class="block-text init-ani delay-6">개발자 <em>지하현</em> 입니다.</span>
+            </h1>
+            <p class="init-ani delay-7">제 웹 포트폴리오에 방문해 주셔서<br>감사합니다.</p>
 
-    <!-- 특성화 영역 -->
-    <section class="features">
-        <h3>주요 카테고리</h3>
-
-        <div class="feature-grid">
-
-            <div class="feature-card blue">
-                <h4>알고리즘 문제</h4>
-                <a href="programming.html">자세히 보기</a>
-            </div>
-
-            <div class="feature-card teal">
-                <h4>자격증 준비</h4>
-                <a href="qualifications.html">자세히 보기</a>
-            </div>
-
-            <div class="feature-card beige">
-                <h4>외국어 학습</h4>
-                <a href="language.html">자세히 보기</a>
-            </div>
-
-            <div class="feature-card orange">
-                <h4>독서 기록</h4>
-                <a href="book.html">자세히 보기</a>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- 학습/성장 기록 -->
-    <section class="records">
-        <h3>나의 학습/성장 기록</h3>
-
-        <div class="records-grid">
-            <div class="record-item">
-                <img src="img/study1.png" alt="학습1">
-                <p>2025.05.24 - 3d 프로젝트 준비</p>
-            </div>
-
-            <div class="record-item">
-                <img src="img/study2.png" alt="학습2">
-                <p>2025.05.25 - 인공지능 수업 과제</p>
-            </div>
-
-            <div class="record-item">
-                <img src="img/study3.jpg" alt="학습3">
-                <p>2025.05.26 - 영어단어 외우기</p>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- 안내/연락처 -->
-    <footer>
-        <div class="footer-info">
-            <div>
-                <h4>연락처</h4>
-                <p>이메일: 2301491@kunsan.ac.kr</p>
-                <p>GitHub: github.com/hahyun1</p>
-                </p>
-            </div>
-
-            <div>
-                <h4>공지사항</h4>
-                <ul>
-                    <li>2025.05.28 - 포트폴리오 사이트 오픈!</li>
-                    <li>2025.05.28 - 웹 중간발표!</li>
+            <div class="social-sidebar init-ani delay-8">
+                <ul class="social-list"> 
+                    <li>
+                        <a href="https://github.com/hahyun1" target="_blank" title="GitHub">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                            </svg>
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="https://blog.naver.com/hyunblog100" target="_blank" title="NaverBlog">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z"/>
+                            </svg>
+                        </a>
+                    </li>
                 </ul>
             </div>
+        </div>
 
-            <div>
-                <h4>오시는 길</h4>
-                <p>전북특별자치도 군산시 대학로 558</p>
-                <br>
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3230.0720808571405!2d126.68026267526282!3d35.94520661542894!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3570595f7094d2bf%3A0x8d10f90336670204!2z65SU7KeA7YS47KCV67O06rSA!5e0!3m2!1sko!2skr!4v1748339403696!5m2!1sko!2skr"
-                    height="auto" 
-                    style="border:0;" 
-                    >
-                </iframe>
+        <a href="#about-me" class="scroll-down-btn init-ani delay-9">
+            <span></span>
+            <span></span>
+            <span></span>
+        </a>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about-me" class="about-section">
+        <div class="about-card"> 
+            <div class="card-header scroll-reveal"> 
+                <span class="deco-text">01. About Me</span>
+                <h1>안녕하세요, 개발자 <em>지하현</em>입니다.</h1>
+            </div>
+        
+            <div class="card-body scroll-reveal"> 
+                
+                <div class="col-profile"> 
+                    <h2>Profile</h2>
+                    <div class="text-box">
+                        <p><strong>이름</strong> 지하현</p>
+                        <p><strong>학력</strong> 군산대학교 컴퓨터정보공학과</p>
+                        <p><strong>전화번호</strong> 010-1234-5678</p>
+                        <p><strong>E-mail</strong> 2301491@kunsan.ac.kr</p>
+                    </div>
+                    <p class="desc">"함께 일하고 싶은 개발자가<br>되고 싶습니다."</p>
+                </div>
+
+                <div class="col-info"> 
+                    <div class="summary-group"> 
+                        <h2>Key Experiences</h2>
+                        <ul class="check-list">
+                            <li>학부 <strong>세미나</strong>를 통한 <strong>AI/딥러닝</strong> 기초 지식 학습 및 모델 실습</li>
+                            <li>다양한 <strong>대회 및 교내 활동</strong> 참여로 문제 해결 능력 확보</li>
+                            <li>다수의 <strong>팀 프로젝트</strong>와 <strong>Git</strong>을 활용한 협업 경험</li>
+                        </ul>
+                    </div>
+
+                    <div class="link-group"> 
+                        <h2>Links</h2>
+                        <div class="link-container"> 
+                            <a href="https://github.com/hahyun1" target="_blank" class="link-card"> 
+                                <div class="icon-box">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                                    </svg>
+                                </div>
+                                <div class="link-text">
+                                    <strong>GitHub</strong>
+                                    <span>소스 코드 저장소</span>
+                                </div>
+                            </a>
+
+                            <a href="https://blog.naver.com/hyunblog100" target="_blank" class="link-card">
+                                <div class="icon-box">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z"/>
+                                    </svg>
+                                </div>
+                                <div class="link-text">
+                                    <strong>Blog</strong>
+                                    <span>공부 기록용 블로그</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="copyright">
-            2025 Level Up 하기
+    <!-- Skills Section -->
+    <section id="skills" class="skills-section">
+        <div class="skills-card">
+            <div class="card-header scroll-reveal">
+                <span class="deco-text">02. Skills</span>
+                <h1>Technical Stack & Tools</h1>
+            </div>
+
+            <div class="skills-container scroll-reveal">
+                <ul class="skill-tabs">
+                    <div class="sliding-bar"></div>
+                
+                    <li class="tab-item active" data-target="Language">Language</li>
+                    <li class="tab-item" data-target="AI-ML">AI / ML</li>
+                    <li class="tab-item" data-target="Web-Mobile">Web / Mobile</li>
+                    <li class="tab-item" data-target="Data-DB">Data / DB</li>
+                    <li class="tab-item" data-target="Tools">Tools</li>
+                </ul>
+                
+                <div class="skill-content-area">
+    
+                    <div id="Language" class="skill-group active">
+                        <h3 class="group-title">Language</h3>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">Py</div>
+                            <div class="skill-info">
+                                <h4>Python</h4>
+                                <p>학부 수업 및 세미나를 통해 인공지능 기초 학습(Pandas, NumPy 등) 경험이 있습니다.</p>
+                            </div>
+                        </div>
+                
+                        <div class="skill-item">
+                            <div class="skill-icon">C</div>
+                            <div class="skill-info">
+                                <h4>C</h4>
+                                <p>포인터와 메모리 구조를 이해하고 있으며, 자료구조를 직접 구현할 수 있습니다.</p>
+                            </div>
+                        </div>
+                
+                        <div class="skill-item">
+                            <div class="skill-icon">C++</div>
+                            <div class="skill-info">
+                                <h4>C++</h4>
+                                <p>자료구조와 알고리즘 학습에 활용하였으며, 유니티(Unity)를 이용한 게임 개발 경험이 있습니다.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">J</div>
+                            <div class="skill-info">
+                                <h4>Java</h4>
+                                <p>객체지향 프로그래밍을 이해하고 있으며, Android Studio를 이용한 앱 개발 경험이 있습니다.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">JS</div>
+                            <div class="skill-info">
+                                <h4>JavaScript / Dart</h4>
+                                <p>기본적인 웹 동적 기능 구현이 가능하며, Dart를 활용한 Flutter 앱 UI 개발 경험이 있습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div id="AI-ML" class="skill-group">
+                        <h3 class="group-title">AI / Machine Learning</h3>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">TF</div>
+                            <div class="skill-info">
+                                <h4>TensorFlow / Keras</h4>
+                                <p>학부 과정에서 딥러닝 모델 학습 및 실습에 활용한 경험이 있습니다.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">PT</div>
+                            <div class="skill-info">
+                                <h4>PyTorch</h4>
+                                <p>학부 세미나 활동을 통해 기초적인 딥러닝 모델을 구현하고 학습해 보았습니다.</p>
+                            </div>
+                        </div>
+                
+                        <div class="skill-item">
+                            <div class="skill-icon">LC</div>
+                            <div class="skill-info">
+                                <h4>LangChain / CVAT</h4>
+                                <p>OpenAI API와 LangChain을 활용한 챗봇 제작 경험 및 CVAT를 이용한 데이터 라벨링 경험이 있습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div id="Web-Mobile" class="skill-group">
+                        <h3 class="group-title">Web / Mobile & Runtime</h3>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">HT</div>
+                            <div class="skill-info">
+                                <h4>HTML / CSS</h4>
+                                <p>웹 표준을 준수하며 기본적인 웹 페이지 레이아웃을 구성할 수 있습니다.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">Node</div>
+                            <div class="skill-info">
+                                <h4>Node.js</h4>
+                                <p>간단한 웹 서버 구축 및 백엔드 로직 구현에 활용한 경험이 있습니다.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">Flt</div>
+                            <div class="skill-info">
+                                <h4>Flutter</h4>
+                                <p>크로스 플랫폼 앱 개발을 위해 UI를 구성하고 기능을 구현해 본 경험이 있습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="Data-DB" class="skill-group">
+                        <h3 class="group-title">Database & Data Tools</h3>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">SQL</div>
+                            <div class="skill-info">
+                                <h4>MySQL / PostgreSQL</h4>
+                                <p>학부 프로젝트에서 웹 애플리케이션과 데이터베이스를 연동하여 데이터를 관리한 경험이 있습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div id="Tools" class="skill-group">
+                        <h3 class="group-title">Tools & Environment</h3>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">Git</div>
+                            <div class="skill-info">
+                                <h4>Git & GitHub</h4>
+                                <p>버전 관리를 위한 커밋, 푸시, 브랜치 전략 활용 및 팀 프로젝트 협업에 능숙합니다.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">Fgm</div>
+                            <div class="skill-info">
+                                <h4>Figma</h4>
+                                <p>앱 개발 프로젝트 진행 시 UI/UX 디자인 프로토타이핑 도구로 활용했습니다.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">IDEs</div>
+                            <div class="skill-info">
+                                <h4>IDEs & Environment</h4>
+                                <p>Eclipse, Android Studio, Spyder, Unity 등 다양한 개발 환경에 익숙합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+                
+            </div>
         </div>
-    </footer>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects-section">
+        <div class="projects-wrapper">
+            
+            <div class="section-header scroll-reveal">
+                <span class="deco-text">03. Projects</span>
+                <h1>Project Timeline</h1>
+            </div>
+
+            <div class="timeline-list scroll-reveal">
+                
+                <!-- PROJECT 1 -->
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">✱</span>
+                            <span class="date-text">2024.12</span>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <h3 class="project-title">퀸 맥클러스키</h3>
+                        <p class="p-desc">C++ 객체지향 프로그래밍 기초 콘솔 프로젝트</p>
+                        
+                        <div class="tech-stack">
+                            <span class="tech-badge">C++</span>
+                        </div>
+
+                        <a href="#" class="view-detail" onclick="openModal(event, 'queenmac')">
+                            <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i> 상세내용 보기
+                        </a>
+                    </div>
+                </div>
+
+                <!-- PROJECT 2 -->
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">✱</span>
+                            <span class="date-text">2025.06 - 07</span>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <h3 class="project-title">통합 지원 앱 개발</h3>
+                        <p class="p-desc">가족돌봄청년을 위한 통합 지원 모바일 앱 UI 개발</p>
+                        
+                        <div class="tech-stack">
+                            <span class="tech-badge"><i class="fas fa-mobile-alt"></i> Flutter</span>
+                            <span class="tech-badge"><i class="fas fa-code"></i> Dart</span>
+                            <span class="tech-badge"><i class="fab fa-figma"></i> Figma</span>
+                            <span class="tech-badge"><i class="fab fa-android"></i> Android studio</span>
+                        </div>
+
+                        <a href="#" class="view-detail" onclick="openModal(event, 'app')">
+                            <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i> 상세내용 보기
+                        </a>
+                    </div>
+                </div>
+
+                <!-- PROJECT 3 -->
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">✱</span>
+                            <span class="date-text">2025.09 - 11</span>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <h3 class="project-title">AI 기반 식물 상태 데이터 인식 작업</h3>
+                        <p class="p-desc">AI 모델 학습을 위한 식물 마름 인식 데이터 수집 및 CVAT 활용 라벨링 작업</p>
+                        
+                        <div class="tech-stack">
+                            <span class="tech-badge"><i class="fas fa-tag"></i> CVAT</span>
+                            <span class="tech-badge"><i class="fas fa-figma"></i> Figma</span>
+                        </div>
+
+                        <a href="#" class="view-detail" onclick="openModal(event, 'plant')">
+                            <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i> 상세내용 보기
+                        </a>
+                    </div>
+                </div>
+
+                <!-- PROJECT 4 -->
+                <div class="timeline-item current">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">✱</span>
+                            <span class="date-text">2025.09 - current</span>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <h3 class="project-title">
+                            유니티 게임 개발
+                            <span class="ing-badge">NOW</span>
+                        </h3>
+                        <p class="p-desc">스토리 기반 무인도 생존 게임</p>
+                        
+                        <div class="tech-stack">
+                            <span class="tech-badge"><i class="fas fa-c++"></i> C++</span>
+                            <span class="tech-badge"><i class="fas fa-unity"></i> Unity</span>
+                            <span class="tech-badge"><i class="fas fa-git"></i> Git</span>
+                        </div>
+
+                        <a href="#" class="view-detail" onclick="openModal(event, 'game')">
+                            <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i> 상세내용 보기
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 프로젝트 상세 모달 (데이터가 주입될 뼈대) -->
+    <div id="project-modal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h2 id="modal-title">프로젝트 제목</h2>
+            </div>
+
+            <div class="modal-body">
+                <div class="section-block">
+                    <h3>프로젝트 설명</h3>
+                    <p id="modal-desc">설명 내용</p>
+                </div>
+
+                <div class="section-block">
+                    <h3>기술 스택</h3>
+                    <div class="tech-badges" id="modal-badges"></div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">참여인원</span>
+                        <span class="value" id="modal-people">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">기간</span>
+                        <span class="value" id="modal-period">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">관련 링크</span>
+                        <a href="#" target="_blank" class="value link" id="modal-link">바로가기</a>
+                    </div>
+                </div>
+
+                <div class="section-block">
+                    <h3>상세 내용</h3>
+                    <ul class="detail-list" id="modal-details"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
 </body>
 </html>
