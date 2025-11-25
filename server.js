@@ -1,62 +1,103 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
+const path = require('path'); 
 
 const app = express();
 const PORT = 3000;
 
-// 프론트엔드에서 오는 요청 허용
 app.use(cors());
 app.use(express.json());
+app.use(express.static(__dirname)); 
 
-// ★ [중요] DB 연결 설정 (본인 비밀번호로 바꾸세요!)
+// DB 연결 설정
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'YOUR_PASSWORD', // ★ 여기에 DBeaver 로그인할 때 쓴 비밀번호 입력!
+    password: 'root@1234', 
     database: 'my_portfolio'
 });
 
 db.connect((err) => {
-    if (err) console.error('❌ DB 연결 실패:', err);
-    else console.log('✅ DB 연결 성공!');
+    if (err) console.error('DB 연결 실패:', err);
+    else console.log('DB 연결 성공!');
 });
 
-// ==========================================
-// API (메뉴판) 만들기
-// ==========================================
+// ---------------- API ----------------
 
-// 1. 프로젝트 목록 달라는 주문 (GET /api/projects)
+// [GET] 목록 가져오기 (READ)
 app.get('/api/projects', (req, res) => {
-    // 손님이 '정렬(sort)'을 'oldest'로 요청했는지 확인
-    const sortOrder = req.query.sort === 'oldest' ? 'ASC' : 'DESC';
+    const sortOrder = req.query.sort === 'asc' ? 'ASC' : 'DESC';
     
-    // DB에 보낼 SQL 주문서 (date_str 기준으로 정렬)
-    // DESC: 내림차순 (최신순), ASC: 오름차순 (오래된순)
-    const sql = `SELECT * FROM projects ORDER BY date_str ${sortOrder}`;
-
+    // 정렬 기준: (1) 진행 중인 것 우선 (2) 종료일 최신순 (3) 시작일 최신순
+    const sql = `
+        SELECT * FROM projects 
+        ORDER BY is_current DESC, end_date ${sortOrder}, start_date ${sortOrder}
+    `;
+    
     db.query(sql, (err, results) => {
         if (err) return res.status(500).send(err);
-        res.json(results); // 찾은 데이터를 손님에게 줌
+        res.json(results);
     });
 });
 
-// 2. 프로젝트 추가 주문 (POST /api/projects)
+// 저장하기 
 app.post('/api/projects', (req, res) => {
-    const { title, summary, date_str, tech_stack, team_size, link, detail_content } = req.body;
-    
-    // 기술 스택 배열을 문자열로 변환
+    const { 
+        title, summary, start_date, end_date, is_current, 
+        tech_stack, team_size, link, link_text, detail_content 
+    } = req.body;
+
     const techStackStr = Array.isArray(tech_stack) ? tech_stack.join(',') : tech_stack;
 
-    const sql = `INSERT INTO projects (title, summary, date_str, tech_stack, team_size, link, detail_content) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO projects 
+        (title, summary, start_date, end_date, is_current, tech_stack, team_size, link, link_text, detail_content) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     
-    db.query(sql, [title, summary, date_str, techStackStr, team_size, link, detail_content], (err, result) => {
+    db.query(sql, [
+        title, summary, start_date, end_date, is_current, 
+        techStackStr, team_size, link, link_text, detail_content
+    ], (err, result) => {
         if (err) return res.status(500).send(err);
-        res.json({ message: '저장 완료', id: result.insertId });
+        res.json({ message: 'Success', id: result.insertId });
     });
 });
 
-// 서버 시작
-app.listen(PORT, () => {
-    console.log(`🚀 서버가 3000번 포트에서 실행 중입니다.`);
+// 수정하기 
+app.put('/api/projects/:id', (req, res) => {
+    const { 
+        title, summary, start_date, end_date, is_current, 
+        tech_stack, team_size, link, link_text, detail_content 
+    } = req.body;
+    const { id } = req.params;
+    const techStackStr = Array.isArray(tech_stack) ? tech_stack.join(',') : tech_stack;
+
+    const sql = `UPDATE projects SET 
+        title=?, summary=?, start_date=?, end_date=?, is_current=?, 
+        tech_stack=?, team_size=?, link=?, link_text=?, detail_content=? 
+        WHERE id=?`;
+
+    db.query(sql, [
+        title, summary, start_date, end_date, is_current, 
+        techStackStr, team_size, link, link_text, detail_content, id
+    ], (err, result) => {
+        if (err) return res.status(500).send(err);
+        res.json({ message: 'Updated' });
+    });
 });
+
+// 삭제하기 
+app.delete('/api/projects/:id', (req, res) => {
+    const { id } = req.params;
+    db.query('DELETE FROM projects WHERE id=?', [id], (err, result) => {
+        if (err) return res.status(500).send(err);
+        res.json({ message: 'Deleted' });
+    });
+});
+
+// 라우팅 (메인, 관리자 페이지)
+app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'index.html')); });
+app.get('/admin', (req, res) => { res.sendFile(path.join(__dirname, 'admin.html')); });
+
+// 서버 시작
+app.listen(PORT, () => { console.log(`서버가 3000번 포트에서 실행 중입니다.`); });

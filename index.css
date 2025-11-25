@@ -28,6 +28,76 @@ html, body {
 a { text-decoration: none; color: inherit; transition: 0.3s; }
 ul { list-style: none; }
 
+
+/* =======================================================
+    기술 스택 뱃지 디자인 
+    ======================================================= */
+.badge {
+    display: inline-block;
+    padding: 6px 10px;        
+    border-radius: 6px;     
+    font-size: 0.8rem;
+    font-weight: 700;         
+    margin-right: 6px;
+    margin-bottom: 6px;
+    
+    border: none;          
+    color: #ffffff;         
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    line-height: 1.2;
+}
+
+/* 기술 스택 배지 */
+.tech-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* --- [언어 & 프레임워크별 브랜드 컬러] --- */
+
+/* 1. JavaScript */
+.badge-js { background-color: #F7DF1E; color: #000 !important; }
+
+/* 2. FrontEnd (파랑/하늘 계열) */
+.badge-ts { background-color: #3178C6; }       /* TypeScript Blue */
+.badge-react { background-color: #61DAFB; color: #000 !important; } /* React Cyan */
+.badge-next { background-color: #000000; }     /* Next.js Black */
+.badge-vue { background-color: #4FC08D; }      /* Vue Green */
+.badge-html { background-color: #E34F26; }     /* HTML Orange */
+.badge-css { background-color: #1572B6; }      /* CSS Blue */
+.badge-tailwind { background-color: #06B6D4; } /* Tailwind Cyan */
+
+/* 3. BackEnd & Languages (빨강/초록/남색) */
+.badge-java { background-color: #E76F00; }     /* Java Orange/Red */
+.badge-spring { background-color: #6DB33F; }   /* Spring Green */
+.badge-node { background-color: #339933; }     /* Node Green */
+.badge-python { background-color: #3776AB; }   /* Python Blue */
+.badge-django { background-color: #092E20; }   /* Django Dark Green */
+.badge-c { background-color: #A8B9CC; color: #000 !important; } /* C Gray */
+.badge-cpp { background-color: #00599C; }      /* C++ Blue */
+.badge-csharp { background-color: #239120; }   /* C# Green */
+
+/* 4. Mobile */
+.badge-flutter { background-color: #02569B; }  /* Flutter Blue */
+.badge-swift { background-color: #F05138; }    /* Swift Orange */
+.badge-kotlin { background-color: #7F52FF; }   /* Kotlin Purple */
+
+/* 5. Database & Cloud */
+.badge-db { background-color: #4479A1; }       /* SQL/MySQL Blue */
+.badge-mongo { background-color: #47A248; }    /* MongoDB Green */
+.badge-firebase { background-color: #FFCA28; color: #000 !important; } /* Firebase Yellow */
+.badge-aws { background-color: #FF9900; }      /* AWS Orange */
+
+/* 6. Tools & Etc */
+.badge-git { background-color: #F05032; }      /* Git Red */
+.badge-github { background-color: #181717; }   /* GitHub Black */
+.badge-figma { background-color: #F24E1E; }    /* Figma Red/Orange */
+.badge-docker { background-color: #2496ED; }   /* Docker Blue */
+.badge-gray { background-color: #6c757d; }     /* 기본 회색 */
+
+
 /* =======================================================
     1. 첫 화면 순차 등장 애니메이션 (Hero Section용)
    ======================================================= */
@@ -83,6 +153,28 @@ ul { list-style: none; }
 .scroll-reveal.active-ani {
     opacity: 1;
     transform: translateY(0); 
+}
+
+/* ===========================
+    리스트 정렬 애니메이션
+   =========================== */
+
+/* 위에서 아래로 투명도와 함께 내려오는 키프레임 */
+@keyframes slideDownFade {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); 
+    }
+}
+
+/* 자바스크립트에서 붙일 클래스 */
+.timeline-item.animate-in {
+    opacity: 0; 
+    animation: slideDownFade 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 /* ===========================
@@ -768,14 +860,6 @@ nav ul.nav-list > li:hover > a::after { width: 100%; }
     word-break: keep-all; 
 }
 
-/* 기술 스택 배지 */
-.tech-stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 12px;
-}
-
 .tech-badge {
     font-size: 0.7rem; 
     padding: 3px 7px;
@@ -829,6 +913,48 @@ nav ul.nav-list > li:hover > a::after { width: 100%; }
     font-weight: normal;
     vertical-align: middle;
     transform: translateY(-1px);
+}
+
+/* ===========================
+    7. 정렬 버튼 스타일
+   =========================== */
+.project-controls {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end; 
+    margin-bottom: 20px; 
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.03); /* 아주 옅은 구분선 */
+}
+
+.sort-btn {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    
+    font-family: 'Gowun Dodum', sans-serif; 
+    font-size: 0.9rem;
+    color: var(--secondary-text); 
+    
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+/* 호버 시 포인트 컬러 적용 */
+.sort-btn:hover {
+    color: var(--point-green); 
+    background-color: rgba(0,0,0,0.02); 
+}
+
+/* 아이콘 위치 미세 조정 */
+.sort-btn i {
+    font-size: 0.8rem;
+    padding-top: 1px;
 }
 
 
@@ -958,23 +1084,6 @@ nav ul.nav-list > li:hover > a::after { width: 100%; }
     margin: 0;
     font-weight: 400;
     word-break: keep-all;
-}
-
-/* 기술 스택 배지 */
-.tech-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-/* 아이콘 스타일 */
-.badge {
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    background-color: #f4f4f4;
-    color: #555;
-    font-weight: 500;
 }
 
 /* 정보 그리드 (참여인원, 기간, 링크 등) */

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 관리 (Admin)</title>
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <a href="index.html">JHH Portfolio</a>
+        </div>
+        
+    </header>
+
+    <section class="projects-section">
+        <div class="projects-wrapper">
+            
+            <div class="section-header">
+                <span class="deco-text">Administrator</span>
+                <h1 id="form-title">Upload Project</h1>
+            </div>
+
+            <form id="uploadForm" class="timeline-list">
+                <input type="hidden" id="edit-id" value="">
+
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">✱</span>
+                            <label for="title" class="date-text">프로젝트명</label>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <input type="text" id="title" class="admin-input title-style" placeholder="예: 퀸 맥클러스키" required>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">📅</span>
+                            <label class="date-text">진행 기간</label>
+                        </div>
+                    </div>
+                    <div class="project-info-col" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <input type="date" id="start_date" class="admin-input" style="width:auto;" required>
+                        <span>~</span>
+                        <input type="date" id="end_date" class="admin-input" style="width:auto;">
+                        
+                        <label style="display:flex; align-items:center; gap:5px; cursor:pointer; font-weight:bold; color:#4CAF50; font-size:0.9rem;">
+                            <input type="checkbox" id="is_current" onchange="toggleEndDate()"> 
+                            진행 중
+                        </label>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">✱</span>
+                            <label for="summary" class="date-text">요약 설명</label>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <input type="text" id="summary" class="admin-input" placeholder="한 줄 설명" required>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">🛠️</span>
+                            <label for="tech_stack" class="date-text">기술 스택</label>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <input type="text" id="tech_stack" class="admin-input" placeholder="예: C++, Unity, Git (쉼표로 구분)" required>
+                        <div class="tech-stack-preview" id="tech-preview">
+                            <span class="badge badge-gray" style="opacity:0.5; font-size:0.8rem;">입력하면 배지가 나타납니다</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">👥</span>
+                            <label for="team_size" class="date-text">참여 인원</label>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <input type="text" id="team_size" class="admin-input" placeholder="예: 1명 (개인) or 4명 (FE 2, BE 2)">
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">📝</span>
+                            <label for="detail_content" class="date-text">상세 내용</label>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="link_text" class="admin-input" placeholder="링크 이름 (예: GitHub)" style="flex:1;">
+                            <input type="text" id="link" class="admin-input" placeholder="URL (https://...)" style="flex:2;">
+                        </div>
+
+                        <textarea id="detail_content" class="admin-textarea" placeholder="모달창에 뜰 상세 내용을 입력하세요."></textarea>
+                        
+                        <div class="btn-group" style="margin-top: 20px; display:flex; gap:10px;">
+                            <button type="button" id="submit-btn" class="view-detail submit-btn" onclick="submitProject()">
+                                <i class="fas fa-upload"></i> DB에 저장하기
+                            </button>
+                            <button type="button" id="cancel-btn" class="view-detail cancel-btn" onclick="resetForm()" style="display:none;">
+                                <i class="fas fa-times"></i> 취소
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="admin-list-section">
+                <h2 style="text-align:center; margin-bottom:20px; color:#555; border-top:1px dashed #ddd; padding-top:30px;">
+                    📂 등록된 프로젝트 관리
+                </h2>
+                <ul id="admin-project-list" class="admin-list">
+                    </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="admin.js"></script>
+</body>
+</html>

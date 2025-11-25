@@ -1,77 +1,266 @@
 /* ==========================================================================
-    1. 전역 변수 및 프로젝트 데이터 (정적)
-   ========================================================================== */
-let lastScrollY = 0; 
-
-// [프로젝트 데이터 관리] 
-const projectsData = {
-    'plant': {
-        title: 'AI 기반 식물 상태 데이터 인식 작업',
-        desc: 'AI 모델 학습을 위한 식물 마름 인식 데이터 수집 및 CVAT 활용 라벨링 작업',
-        badges: ['CVAT','Figma'],
-        people: '4명 (데이터팀)',
-        period: '2025.09 ~ 2025.11',
-        link: '#',
-        linkText: '결과 보고서 보기',
-        details: [
-            'CVAT 툴을 활용한 식물 잎/줄기 Polygon 정밀 라벨링 수행',
-            '데이터 품질 검수 및 노이즈 데이터 필터링 프로세스 도입',
-        ]
-    },
-    'app': {
-        title: '통합 지원 앱 개발',
-        desc: '가족돌봄청년을 위한 통합 지원 모바일 앱 UI 개발',
-        badges: ['Flutter', 'Dart', 'Figma', 'Android Studio'],
-        people: '4명 (FE 2, BE 2)',
-        period: '2025.06 ~ 2025.07',
-        link: 'https://github.com/hahyun1/backup',
-        linkText: 'Git',
-        details: [
-            'Flutter 프레임워크를 활용한 크로스 플랫폼 UI/UX 구현',
-            'Figma를 활용한 화면 설계 및 디자인 시스템 구축',
-            '복잡한 복지 정책 데이터를 직관적인 카드 UI로 시각화'
-        ]
-    },
-    'queenmac': {
-        title: '퀸 맥클러스키',
-        desc: 'C++ 객체지향 프로그래밍 기초 콘솔 프로젝트',
-        badges: ['C++'],
-        people: '1명 (개인)',
-        period: '2024.12',
-        link: '#',
-        linkText: '시연 영상 보기',
-        details: [
-            '학부생 시절 C++을 활용하여 구현'
-        ]
-    },
-    'game': {
-        title: '유니티 게임 개발',
-        desc: '스토리 기반 무인도 생존 게임',
-        badges: ['C++', 'Unity', 'Git'],
-        people: '2명',
-        period: '2025.09 - current',
-        link: '#',
-        linkText: '시연 영상 보기',
-        details: [
-            '학부생 시절 유니티를 활용하여 구현'
-        ]
-    }
-};
+ * 1. 전역 변수 및 서버 설정
+ * ========================================================================== */
+const SERVER_URL = 'http://localhost:3000/api/projects';
+let lastScrollY = 0;
+let projectsData = {}; // 프로젝트 ID를 키로 데이터 저장
+let isOldest = false; // 정렬 상태 (false: 최신순, true: 오래된순)
 
 /* ==========================================================================
-    2. 초기화
-    ========================================================================== */
+ * 2. 초기화 (Initialization)
+ * ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
-       initScrollHeader();      // 헤더 스크롤
-       initScrollReveal();      // 요소 등장 애니메이션
-       initSkillScrollSpy();    // 스킬 섹션 스크롤바 기능
+    initScrollHeader(); 
+    initScrollReveal(); 
+    initSkillScrollSpy(); 
+    
+    // [초기 로드] 최신순(desc)으로 시작
+    loadProjects('desc'); 
+    
+    // 모달 닫기 이벤트 연결
+    const modal = document.getElementById("project-modal");
+    if (modal) {
+        modal.addEventListener('click', closeModal);
+    }
 });
 
 /* ==========================================================================
-    3. 헤더 스크롤 제어
-    ========================================================================== */
+ * 3. 데이터 로딩 & 화면 출력
+ * ========================================================================== */
+
+// [기능] 기술 스택 배지 색상 판별
+function getBadgeClass(techName) {
+    const name = techName.toLowerCase().trim();
+
+    // 1. Languages
+    if (name === 'c') return 'badge-c';
+    if (name === 'c++' || name === 'cpp') return 'badge-cpp';
+    if (name === 'c#' || name === 'csharp') return 'badge-csharp';
+    if (name === 'java') return 'badge-java';
+    if (name.includes('python')) return 'badge-python';
+    if (name === 'js' || name === 'javascript') return 'badge-js';
+    if (name === 'ts' || name === 'typescript') return 'badge-ts';
+
+    // 2. FrontEnd & Web
+    if (name.includes('react')) return 'badge-react';
+    if (name.includes('vue')) return 'badge-vue';
+    if (name.includes('next')) return 'badge-next';
+    if (name.includes('html')) return 'badge-html';
+    if (name.includes('css')) return 'badge-css';
+    if (name.includes('tailwind')) return 'badge-tailwind';
+
+    // 3. BackEnd & Frameworks
+    if (name.includes('node')) return 'badge-node';
+    if (name.includes('spring')) return 'badge-spring';
+    if (name.includes('django')) return 'badge-django';
+
+    // 4. Mobile
+    if (name.includes('flutter')) return 'badge-flutter';
+    if (name.includes('swift')) return 'badge-swift';
+    if (name.includes('kotlin')) return 'badge-kotlin';
+
+    // 5. Data & DB
+    if (name.includes('mongo')) return 'badge-mongo';
+    if (name.includes('firebase')) return 'badge-firebase';
+    if (name.includes('sql') || name.includes('db') || name.includes('database')) return 'badge-db';
+
+    // 6. Tools & Cloud
+    if (name.includes('aws')) return 'badge-aws';
+    if (name.includes('docker')) return 'badge-docker';
+    if (name.includes('figma')) return 'badge-figma';
+    if (name.includes('git')) {
+        if (name.includes('hub')) return 'badge-github';
+        return 'badge-git';
+    }
+
+    // 그 외는 회색 처리
+    return 'badge-gray'; 
+}
+
+// [기능] 기술 스택 HTML 생성
+function createTechHtml(techStackStr) {
+    if (!techStackStr) return '';
+    return techStackStr.split(',').map(tech => {
+        const className = getBadgeClass(tech);
+        return `<span class="badge ${className}">${tech.trim()}</span>`;
+    }).join('');
+}
+
+// [기능] 날짜 포맷팅 (YYYY-MM-DD -> YYYY.MM 변환 및 기간 합치기)
+function formatDateRange(start, end, isCurrent) {
+    if (!start) return '';
+    
+    // 앞 7자리(YYYY-MM)만 자르고 -를 .으로 변경
+    const startDate = start.substring(0, 7).replace('-', '.');
+    
+    if (isCurrent) {
+        return `${startDate} - Current`;
+    } else if (end) {
+        const endDate = end.substring(0, 7).replace('-', '.');
+        return (startDate === endDate) ? startDate : `${startDate} - ${endDate}`;
+    } else {
+        return startDate;
+    }
+}
+
+// [기능] 서버에서 프로젝트 목록 가져오기
+async function loadProjects(sortType) {
+    const timelineList = document.querySelector('.timeline-list');
+    
+    try {
+        // 서버 요청
+        const response = await fetch(`${SERVER_URL}?sort=${sortType}`);
+        let projects = await response.json();
+
+        projects.sort((a, b) => {
+
+            const getEndDate = (p) => {
+
+                if (p.is_current) return new Date().getTime(); 
+                // 끝난 날짜가 있으면 그 날짜, 없으면 0 (아주 과거)
+                return p.end_date ? new Date(p.end_date).getTime() : 0;
+            };
+
+            const dateA = getEndDate(a);
+            const dateB = getEndDate(b);
+
+            if (dateA === dateB) {
+                const startA = new Date(a.start_date).getTime();
+                const startB = new Date(b.start_date).getTime();
+                // 최신순일 땐 늦게 시작한 게 위로, 오래된순일 땐 빨리 시작한 게 위로
+                return sortType === 'asc' ? startA - startB : startB - startA;
+            }
+
+            if (sortType === 'asc') {
+
+                return dateA - dateB; 
+            } else {
+
+                return dateB - dateA; 
+            }
+        });
+        // ============================================================
+
+        timelineList.innerHTML = ''; // 초기화
+        projectsData = {}; 
+
+        if (projects.length === 0) {
+            timelineList.innerHTML = '<p style="text-align:center; padding:50px; color:#888;">아직 등록된 프로젝트가 없습니다.</p>';
+            return;
+        }
+
+        projects.forEach(data => {
+            projectsData[data.id] = data; 
+            
+            const dateText = formatDateRange(data.start_date, data.end_date, data.is_current);
+            const activeClass = data.is_current ? 'current' : '';
+            const nowBadge = data.is_current ? '<span class="ing-badge" style="font-size:0.65rem; background:#4CAF50; color:white; padding:2px 5px; border-radius:4px; margin-left:8px; vertical-align:middle;">NOW</span>' : '';
+
+            const html = `
+            <div class="timeline-item scroll-reveal ${activeClass}">
+                <div class="project-date-col">
+                    <div class="date-wrapper">
+                        <span class="date-icon">✱</span>
+                        <span class="date-text">${dateText}</span>
+                    </div>
+                </div>
+                <div class="project-info-col">
+                    <h3 class="project-title">${data.title} ${nowBadge}</h3>
+                    <p class="p-desc">${data.summary}</p>
+                
+                    <div class="tech-stack">
+                        ${createTechHtml(data.tech_stack)}
+                    </div>
+
+                    <a href="#" class="view-detail" onclick="openModal(event, ${data.id})">
+                        <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i> 상세보기
+                    </a>
+                </div>
+            </div>
+            `;
+            timelineList.insertAdjacentHTML('beforeend', html);
+        });
+
+        initScrollReveal(); 
+
+    } catch (error) {
+        console.error("서버 연결 실패:", error);
+        timelineList.innerHTML = '<p style="text-align:center; padding:50px; color:red;">⚠️ 서버 연결 실패 (node server.js 확인)</p>';
+    }
+}
+
+// [기능] 정렬 토글 버튼
+function toggleSort() {
+    const btn = document.getElementById('sort-btn');
+    if (!btn) return;
+
+    isOldest = !isOldest; 
+
+    if (isOldest) {
+        btn.innerHTML = '<i class="fas fa-sort-amount-up"></i> 오래된순';
+        loadProjects('asc'); // 오름차순
+    } else {
+        btn.innerHTML = '<i class="fas fa-sort-amount-down"></i> 최신순';
+        loadProjects('desc'); // 내림차순
+    }
+}
+
+/* ==========================================================================
+ * 4. 모달 (상세보기) 기능
+ * ========================================================================== */
+function openModal(event, dbId) {
+    if(event) event.preventDefault();
+
+    const data = projectsData[dbId];
+    if (!data) return;
+
+    // 기본 텍스트
+    document.getElementById('modal-title').innerText = data.title;
+    document.getElementById('modal-desc').innerText = data.summary;
+    document.getElementById('modal-people').innerText = data.team_size || '-';
+    
+    // 날짜
+    document.getElementById('modal-period').innerText = formatDateRange(data.start_date, data.end_date, data.is_current);
+    
+    // 링크
+    const linkEl = document.getElementById('modal-link');
+    if(data.link) {
+        linkEl.href = data.link;
+        linkEl.innerText = data.link_text || "바로가기";
+        linkEl.style.display = "inline-block";
+        linkEl.target = "_blank";
+    } else {
+        linkEl.innerText = "";
+        linkEl.removeAttribute("href");
+    }
+
+    // 기술 스택 & 상세 내용
+    document.getElementById('modal-badges').innerHTML = createTechHtml(data.tech_stack);
+    const content = data.detail_content ? data.detail_content.replace(/\n/g, '<br>') : '내용 없음';
+    document.getElementById('modal-details').innerHTML = `<li style="list-style:none;">${content}</li>`;
+
+    // 모달 열기
+    const modal = document.getElementById("project-modal");
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+}
+
+function closeModal(event) {
+    // 배경 클릭 시 닫기 (내부 컨텐츠 클릭 제외)
+    if (event && event.target.closest('.modal-content') && !event.target.classList.contains('close-btn')) {
+        return;
+    }
+    const modal = document.getElementById("project-modal");
+    modal.classList.remove("active");
+    document.body.style.overflow = "auto";
+}
+
+/* ==========================================================================
+ * 5. UI 기능 (스크롤, 탭) 
+ * ========================================================================== */
 function initScrollHeader() {
     const header = document.querySelector("header");
+    if(!header) return;
     window.addEventListener("scroll", () => {
         const currentScrollY = window.scrollY;
         if (currentScrollY > lastScrollY && currentScrollY > 0) {
@@ -83,131 +272,59 @@ function initScrollHeader() {
     });
 }
 
-/* ==========================================================================
-    4. 스크롤 등장 애니메이션 
-      ========================================================================== */
 function initScrollReveal() {
-    const observerOptions = {
-        root: null, rootMargin: "0px", threshold: 0.1
-    };
     const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add("active-ani");
-                obs.unobserve(entry.target);
             }
         });
-    }, observerOptions);
-
+    }, { root: null, rootMargin: "0px", threshold: 0.1 });
     document.querySelectorAll(".scroll-reveal").forEach(el => observer.observe(el));
 }
 
-/* ==========================================================================
-    5. 스킬 섹션 스크롤바 기능 
-    ========================================================================== */
-    function initSkillScrollSpy() {
-        const tabs = document.querySelectorAll('.skill-tabs .tab-item');
-        const sections = document.querySelectorAll('.skill-group');
-        const slider = document.querySelector('.sliding-bar');
-    
-        // 슬라이더를 해당 탭 위치로 이동시키는 함수
-        function moveSlider(tab) {
-            // 탭의 높이와 위치를 계산해서 슬라이더에 적용
-            slider.style.top = tab.offsetTop + "px";
-            slider.style.height = tab.offsetHeight + "px";
-        }
-    
-        // 초기 실행: 첫 번째 탭('Language')을 활성화 상태로 만듦
-        if(tabs.length > 0) {
-            moveSlider(tabs[0]);
-            tabs[0].classList.add('active');
-            // 첫 번째 섹션만 보이게
-            const firstTargetId = tabs[0].getAttribute('data-target');
-            document.getElementById(firstTargetId).classList.add('active');
-        }
-    
-        // 클릭 이벤트 처리
-        tabs.forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                e.preventDefault();
-    
-                // 1. 모든 탭의 active 제거
-                tabs.forEach(t => t.classList.remove('active'));
-                
-                // 2. 현재 클릭한 탭 active 추가
-                tab.classList.add('active');
-    
-                // 3. 슬라이더 위치 이동 
-                moveSlider(tab);
-    
-                // 4. 모든 섹션 숨기기
-                sections.forEach(sec => sec.classList.remove('active'));
-    
-                // 5. 클릭한 탭에 해당하는 섹션만 보여주기
-                const targetId = tab.getAttribute('data-target');
-                const targetSection = document.getElementById(targetId);
-                if (targetSection) {
-                    targetSection.classList.add('active');
-                }
-            });
-        });
-    
-        window.addEventListener('resize', () => {
-            const activeTab = document.querySelector('.skill-tabs .tab-item.active');
-            if(activeTab) moveSlider(activeTab);
-        });
+function initSkillScrollSpy() {
+    const tabs = document.querySelectorAll('.skill-tabs .tab-item');
+    const sections = document.querySelectorAll('.skill-group');
+    const slider = document.querySelector('.sliding-bar');
+
+    if(!tabs.length || !slider) return;
+
+    function moveSlider(tab) {
+        slider.style.top = tab.offsetTop + "px";
+        slider.style.height = tab.offsetHeight + "px";
     }
-/* ==========================================================================
-    6. 프로젝트 상세 모달 
-    ========================================================================== */
-function openModal(event, projectId) {
-    if(event) event.preventDefault();
 
-    const data = projectsData[projectId];
-    if (!data) return;
+    if(tabs.length > 0) {
+        moveSlider(tabs[0]);
+        tabs[0].classList.add('active');
+        const firstTargetId = tabs[0].getAttribute('data-target');
+        if(firstTargetId) {
+            const el = document.getElementById(firstTargetId);
+            if(el) el.classList.add('active');
+        }
+    }
 
-    // 텍스트 데이터 채우기
-    document.getElementById('modal-title').innerText = data.title;
-    document.getElementById('modal-desc').innerText = data.desc;
-    document.getElementById('modal-people').innerText = data.people;
-    document.getElementById('modal-period').innerText = data.period;
-    
-    const linkEl = document.getElementById('modal-link');
-    linkEl.href = data.link;
-    linkEl.innerText = data.linkText;
-
-    // 기술 배지 생성
-    const badgeContainer = document.getElementById('modal-badges');
-    badgeContainer.innerHTML = ''; 
-    data.badges.forEach(text => {
-        const span = document.createElement('span');
-        span.className = 'badge';
-        span.innerText = text;
-        badgeContainer.appendChild(span);
+    tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            e.preventDefault();
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            moveSlider(tab);
+            sections.forEach(sec => sec.classList.remove('active'));
+            const targetId = tab.getAttribute('data-target');
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) targetSection.classList.add('active');
+        });
     });
 
-    // 상세 내용 리스트 생성
-    const detailContainer = document.getElementById('modal-details');
-    detailContainer.innerHTML = ''; 
-    data.details.forEach(text => {
-        const li = document.createElement('li');
-        li.innerText = text;
-        detailContainer.appendChild(li);
+    window.addEventListener('resize', () => {
+        const activeTab = document.querySelector('.skill-tabs .tab-item.active');
+        if(activeTab) moveSlider(activeTab);
     });
-
-    // 모달 보이기
-    const modal = document.getElementById("project-modal");
-    modal.classList.add("active");
-    document.body.style.overflow = "hidden"; // 배경 스크롤 막기
 }
 
-function closeModal(event) {
-    // 모달 내부 클릭 시 닫히지 않음 (닫기 버튼이나 배경 클릭 시에만 닫힘)
-    if (event && event.target.closest('.modal-content') && !event.target.classList.contains('close-btn')) {
-        return;
-    }
-    const modal = document.getElementById("project-modal");
-    modal.classList.remove("active");
-    document.body.style.overflow = "auto"; // 배경 스크롤 허용
-}
-
+// 전역 노출
+window.toggleSort = toggleSort;
+window.openModal = openModal;
+window.closeModal = closeModal;
