@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modal) {
         modal.addEventListener('click', closeModal);
     }
+
+    // [추가] 방문자 수 업데이트 실행
+    updateVisitCount();
 });
 
 /* ==========================================================================
@@ -322,6 +325,32 @@ function initSkillScrollSpy() {
         const activeTab = document.querySelector('.skill-tabs .tab-item.active');
         if(activeTab) moveSlider(activeTab);
     });
+}
+
+/* ==========================================================================
+    방문자 수 가져오기 (MongoDB 연동)
+ * ========================================================================== */
+async function updateVisitCount() {
+    const textSpan = document.getElementById('visit-text');
+    if (!textSpan) return; // HTML에 태그가 없으면 그냥 종료
+
+    try {
+        // 서버에 요청
+        const response = await fetch('http://localhost:3000/api/visit');
+        const data = await response.json();
+        
+        // 화면에 표시 (Today: 빨간색, Total: 검은색)
+        textSpan.innerHTML = `
+            <span style="color:#555; font-size:0.9em;">Today</span> 
+            <span style="color:#d32f2f; font-weight:bold;">${data.today}</span>
+            <span style="color:#ccc; margin:0 6px;">|</span>
+            <span style="color:#555; font-size:0.9em;">Total</span> 
+            <span>${data.total.toLocaleString()}</span>
+        `;
+    } catch (error) {
+        console.error("방문자 정보 로딩 실패:", error);
+        textSpan.innerText = "Count Error";
+    }
 }
 
 // 전역 노출
