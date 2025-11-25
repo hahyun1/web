@@ -806,7 +806,7 @@ nav ul.nav-list > li:hover > a::after { width: 100%; }
 
 /* [왼쪽] 날짜 및 아이콘 영역 */
 .project-date-col {
-    width: 140px; 
+    width: 150px; 
     flex-shrink: 0; 
     display: flex;
     justify-content: flex-start; 
@@ -816,6 +816,7 @@ nav ul.nav-list > li:hover > a::after { width: 100%; }
     font-size: 0.95rem; 
     color: var(--secondary-text);
     line-height: 1.4; 
+    white-space: nowrap;
 }
 
 /* 날짜 옆 별표(*) 스타일 */

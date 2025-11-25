@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # [1] 우리의 웹 서버 (Node.js)
+  my-app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=mysql-container  # server.js에서 쓴 변수에 주소 할당
+      - MONGO_HOST=mongo-container
+    depends_on:
+      - mysql-container
+      - mongo-container
+
+  # [2] MySQL 데이터베이스
+  mysql-container:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root@1234
+      MYSQL_DATABASE: my_portfolio
+    ports:
+      - "3307:3306"
+
+  # [3] MongoDB 데이터베이스
+  mongo-container:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
