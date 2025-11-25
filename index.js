@@ -188,7 +188,7 @@ async function loadProjects(sortType) {
 
     } catch (error) {
         console.error("서버 연결 실패:", error);
-        timelineList.innerHTML = '<p style="text-align:center; padding:50px; color:red;">⚠️ 서버 연결 실패 (node server.js 확인)</p>';
+        timelineList.innerHTML = '<p style="text-align:center; padding:50px; color:red;">⚠️ 서버 연결 실패 (Docker 실행 여부를 확인하세요)</p>';
     }
 }
 

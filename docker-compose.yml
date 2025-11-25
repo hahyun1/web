@@ -4,6 +4,7 @@ services:
   # [1] 우리의 웹 서버 (Node.js)
   my-app:
     build: .
+    restart: always
     ports:
       - "3000:3000"
     environment:

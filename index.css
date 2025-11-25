@@ -1137,3 +1137,42 @@ nav ul.nav-list > li:hover > a::after { width: 100%; }
     line-height: 1.6;
 }
 
+/* ===========================
+    9. 방문자 카운터 디자인
+    =========================== */
+    .visit-counter {
+        /* 포지션 */
+        position: fixed;
+        top: 100px; 
+        right: 20px; 
+        z-index: 9999; 
+        
+        /* 레이아웃 */
+        display: flex;
+        align-items: center; 
+        gap: 8px;
+    
+        /* 디자인 */
+        background: rgba(255,255,255,0.9); /* 배경: 흰색 약간 투명 */
+        padding: 8px 15px; 
+        border-radius: 20px; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    
+        /* 폰트 */
+        font-family: 'Gowun Dodum', sans-serif; /* 프로젝트 폰트 사용 */
+        font-size: 0.9rem; 
+        color: var(--primary-text); /* 기본 텍스트 색상 사용 */
+        font-weight: 500;
+    }
+    
+    /* 아이콘 스타일 */
+    .visit-counter .fas.fa-eye {
+        color: var(--point-green); /* 포인트 색상 (#4CAF50 대신 변수 사용) */
+    }
+    
+    /* 텍스트 스타일 */
+    .visit-counter #visit-text {
+        color: var(--primary-text); 
+        font-weight: 600;
+    }
+
