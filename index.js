@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.addEventListener('click', closeModal);
     }
 
-    // [추가] 방문자 수 업데이트 실행
+    // 방문자 수 업데이트 실행
     updateVisitCount();
 });
 
@@ -241,6 +241,34 @@ function openModal(event, dbId) {
     document.getElementById('modal-badges').innerHTML = createTechHtml(data.tech_stack);
     const content = data.detail_content ? data.detail_content.replace(/\n/g, '<br>') : '내용 없음';
     document.getElementById('modal-details').innerHTML = `<li style="list-style:none;">${content}</li>`;
+
+    /* [중요] 이미지/영상 표시 로직 추가 */
+    const mediaContainer = document.getElementById('modal-media-container');
+    const modalImg = document.getElementById('modal-img');
+    const modalVideo = document.getElementById('modal-video');
+
+    if (data.image_url) {
+        mediaContainer.style.display = 'block';
+        // 서버 주소(localhost:3000)와 이미지 경로 결합
+        const fullUrl = `http://localhost:3000${data.image_url}`;
+
+        if (data.image_url.match(/\.(mp4|webm)$/i)) {
+            // 동영상일 경우
+            modalVideo.src = fullUrl;
+            modalVideo.style.display = 'inline-block';
+            modalImg.style.display = 'none';
+        } else {
+            // 이미지일 경우
+            modalImg.src = fullUrl;
+            modalImg.style.display = 'inline-block';
+            modalVideo.style.display = 'none';
+        }
+    } else {
+        // 파일 없으면 숨김
+        mediaContainer.style.display = 'none';
+        modalImg.src = "";
+        modalVideo.src = "";
+    }
 
     // 모달 열기
     const modal = document.getElementById("project-modal");

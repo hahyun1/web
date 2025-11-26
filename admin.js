@@ -8,6 +8,7 @@ const SERVER_URL = 'http://localhost:3000/api/projects';
  * ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
     initBadgePreview();
+    initFilePreview(); 
     loadAdminProjects(); // 페이지 로드 시 목록 불러오기
     
 });
@@ -29,63 +30,59 @@ function toggleEndDate() {
 
 // [기능] 프로젝트 저장 및 수정 (CREATE / UPDATE)
 async function submitProject() {
-    const getValue = (id) => {
-        const el = document.getElementById(id);
-        return el ? el.value.trim() : "";
-    };
-
+    const getValue = (id) => document.getElementById(id).value.trim();
     const isCurrent = document.getElementById('is_current').checked;
-    const editId = document.getElementById('edit-id').value; // 수정 모드 확인
+    const editId = document.getElementById('edit-id').value;
+    
+    // 파일 업로드는 FormData 객체를 사용해야 함
+    const formData = new FormData();
+    
+    formData.append('title', getValue('title'));
+    formData.append('summary', getValue('summary'));
+    formData.append('start_date', getValue('start_date'));
+    if (!isCurrent) formData.append('end_date', getValue('end_date'));
+    formData.append('is_current', isCurrent ? 1 : 0);
+    formData.append('tech_stack', getValue('tech_stack'));
+    formData.append('team_size', getValue('team_size'));
+    formData.append('link', getValue('link'));
+    formData.append('link_text', getValue('link_text'));
+    formData.append('detail_content', getValue('detail_content'));
 
-    const data = {
-        title: getValue('title'),
-        summary: getValue('summary'),
-        start_date: getValue('start_date'),
-        end_date: isCurrent ? null : getValue('end_date'),
-        is_current: isCurrent,
-        tech_stack: getValue('tech_stack'),
-        team_size: getValue('team_size'),
-        link: getValue('link'),
-        link_text: getValue('link_text'),
-        detail_content: getValue('detail_content')
-    };
+    // 파일 추가
+    const fileInput = document.getElementById('project_file');
+    if (fileInput.files[0]) {
+        formData.append('project_file', fileInput.files[0]);
+    }
 
-    // 필수값 체크
-    if (!data.title || !data.start_date) {
+    if (!getValue('title') || !getValue('start_date')) {
         alert("제목과 시작 날짜는 필수입니다!");
         return;
     }
 
     try {
         let response;
-        // ID가 있으면 수정(PUT), 없으면 새글(POST)
         if (editId) {
             response = await fetch(`${SERVER_URL}/${editId}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: formData // 헤더(Content-Type)는 브라우저가 알아서 설정함
             });
         } else {
             response = await fetch(SERVER_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: formData
             });
         }
 
         if (response.ok) {
-            // [수정] 홈으로 이동하지 않고 현재 페이지 유지
             alert(editId ? "수정 완료!" : "저장 성공!");
-            
-            resetForm();       // 입력창 비우기
-            loadAdminProjects(); // 아래 목록 새로고침 (저장된 거 바로 확인 가능)
-            
+            resetForm();
+            loadAdminProjects();
         } else {
-            alert("작업 실패: 서버 에러");
+            alert("작업 실패");
         }
     } catch (error) {
         console.error(error);
-        alert("서버가 꺼져있습니다. (node server.js 확인)");
+        alert("서버 에러");
     }
 }
 
@@ -178,14 +175,39 @@ function startEdit(data) {
     document.getElementById('tech_stack').dispatchEvent(event);
 
     // 4. UI 변경 (수정 모드임을 알림)
-    document.getElementById('form-title').innerText = "Edit Project ✏️";
+    document.getElementById('form-title').innerText = "Edit Project";
     const submitBtn = document.getElementById('submit-btn');
     submitBtn.innerHTML = '<i class="fas fa-check"></i> 수정 완료';
     submitBtn.style.color = "#2196F3"; 
     submitBtn.style.borderColor = "#2196F3";
     
     document.getElementById('cancel-btn').style.display = 'inline-flex';
+
+    //파일
+    const previewContainer = document.getElementById('file-preview-container');
+    const imgPreview = document.getElementById('img-preview');
+    const videoPreview = document.getElementById('video-preview');
+
+    if (data.image_url) {
+        previewContainer.style.display = 'block';
+        // 서버 주소 + 이미지 경로
+        const fullUrl = `http://localhost:3000${data.image_url}`;
+        
+        // 확장자로 이미지/비디오 구분 (간단한 방식)
+        if (data.image_url.match(/\.(mp4|webm)$/i)) {
+            videoPreview.src = fullUrl;
+            videoPreview.style.display = 'block';
+            imgPreview.style.display = 'none';
+        } else {
+            imgPreview.src = fullUrl;
+            imgPreview.style.display = 'block';
+            videoPreview.style.display = 'none';
+        }
+    } else {
+        previewContainer.style.display = 'none';
+    }
 }
+
 
 // [기능] 폼 초기화 (취소 버튼)
 function resetForm() {
@@ -202,6 +224,9 @@ function resetForm() {
     
     document.getElementById('cancel-btn').style.display = 'none';
     toggleEndDate(); // 날짜칸 초기화
+
+    document.getElementById('project_file').value = ''; // 파일 입력 초기화
+    document.getElementById('file-preview-container').style.display = 'none';
 }
 
 // [기능] 배지 색상 로직 
@@ -277,6 +302,34 @@ function initBadgePreview() {
             previewBox.innerHTML = badgesHtml;
         });
     }
+}
+
+//파일 미리보기
+function initFilePreview() {
+    const fileInput = document.getElementById('project_file');
+    const previewContainer = document.getElementById('file-preview-container');
+    const imgPreview = document.getElementById('img-preview');
+    const videoPreview = document.getElementById('video-preview');
+
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            previewContainer.style.display = 'block';
+            const fileUrl = URL.createObjectURL(file);
+
+            if (file.type.startsWith('image/')) {
+                imgPreview.src = fileUrl;
+                imgPreview.style.display = 'block';
+                videoPreview.style.display = 'none';
+            } else if (file.type.startsWith('video/')) {
+                videoPreview.src = fileUrl;
+                videoPreview.style.display = 'block';
+                imgPreview.style.display = 'none';
+            }
+        } else {
+            previewContainer.style.display = 'none';
+        }
+    });
 }
 
 // 전역 노출

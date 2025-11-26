@@ -324,7 +324,7 @@
         </div>
     </section>
 
-    <!-- 프로젝트 상세 모달 (데이터가 주입될 뼈대) -->
+    <!-- 프로젝트 상세 모달 -->
     <div id="project-modal" class="modal-overlay" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             
@@ -338,6 +338,7 @@
             </div>
 
             <div class="modal-body">
+                <!-- 1. 설명 및 스펙 -->
                 <div class="section-block">
                     <h3>프로젝트 설명</h3>
                     <p id="modal-desc">설명 내용</p>
@@ -348,6 +349,7 @@
                     <div class="tech-badges" id="modal-badges"></div>
                 </div>
 
+                <!-- 2. 정보 그리드 -->
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="label">참여인원</span>
@@ -363,10 +365,21 @@
                     </div>
                 </div>
 
-                <div class="section-block">
+                <!-- 3. 상세 내용 (여기에 사진/영상을 넣었습니다!) -->
+                <div class="section-block" style="margin-top: 30px; border-top: 1px dashed #eee; padding-top: 20px;">
                     <h3>상세 내용</h3>
-                    <ul class="detail-list" id="modal-details"></ul>
+                    
+                    <!-- [위치 이동] 이미지/영상 표시 영역 -->
+                    <div id="modal-media-container" style="margin-bottom: 20px; display: none; text-align: center;">
+                        <img id="modal-img" src="" style="max-width: 100%; border-radius: 8px; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px;">
+                        <video id="modal-video" src="" style="max-width: 100%; border-radius: 8px; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 10px;" controls></video>
+                        <p style="font-size: 0.9rem; color: #888;">▲ 프로젝트 실행/결과 화면</p>
+                    </div>
+
+                    <!-- 상세 글 내용 -->
+                    <ul class="detail-list" id="modal-details" style="line-height: 1.8; color: #444;"></ul>
                 </div>
+
             </div>
         </div>
     </div>

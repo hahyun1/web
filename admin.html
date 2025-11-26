@@ -73,6 +73,28 @@
                     </div>
                 </div>
 
+                <!-- [추가] 파일 업로드 영역 -->
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">📷</span>
+                            <label class="date-text">대표 이미지/영상</label>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <!-- accept 속성으로 이미지와 동영상만 허용 -->
+                        <input type="file" id="project_file" class="admin-input" accept="image/*, video/*">
+                        
+                        <!-- 미리보기 영역 -->
+                        <div id="file-preview-container" style="margin-top: 10px; display: none;">
+                            <p style="font-size:0.8rem; color:#666; margin-bottom:5px;">미리보기:</p>
+                            <img id="img-preview" src="" style="max-width: 200px; border-radius: 8px; display: none;">
+                            <video id="video-preview" src="" style="max-width: 200px; border-radius: 8px; display: none;" controls></video>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="timeline-item">
                     <div class="project-date-col">
                         <div class="date-wrapper">

@@ -13,6 +13,8 @@ services:
     depends_on:
       - mysql-container
       - mongo-container
+    volumes:
+      - ./uploads:/app/uploads
 
   # [2] MySQL 데이터베이스
   mysql-container:
