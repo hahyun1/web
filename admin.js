@@ -9,6 +9,7 @@ const SERVER_URL = 'http://localhost:3000/api/projects';
 document.addEventListener('DOMContentLoaded', () => {
     initBadgePreview();
     loadAdminProjects(); // 페이지 로드 시 목록 불러오기
+    
 });
 
 // [기능] 종료 날짜 토글 (진행 중 체크 시)
@@ -139,7 +140,7 @@ async function deleteProject(id) {
     try {
         const response = await fetch(`${SERVER_URL}/${id}`, { method: 'DELETE' });
         if (response.ok) {
-            alert("🗑️ 삭제되었습니다.");
+            alert("삭제되었습니다.");
             loadAdminProjects(); // 목록 갱신
         } else {
             alert("삭제 실패");
