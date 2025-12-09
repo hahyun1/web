@@ -7,6 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="home.css">
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 
 <body>
@@ -41,7 +45,6 @@
 
     <section class="highlight-tests-carousel">
         <h2 class="section-title" style="margin-bottom: 30px;">추천 콘텐츠</h2>
-        
         <div class="carousel-window"> 
             <div class="highlight-track"></div>
         </div>
@@ -63,10 +66,22 @@
         <div class="test-grid-container"></div>
     </section>
     
-    <footer class="footer">
-        e-mail: 2301491@kunsan.ac.kr
-    </footer>
+    <div id="react-footer"></div>
 
     <script src="main.js"></script>
+
+    <script type="text/babel">
+        function Footer() {
+            return (
+                <footer className="footer" style={{ padding: '20px', textAlign: 'center', background: '#f1f1f1', marginTop: '50px', borderTop: '1px solid #ddd' }}>
+                    <h3 style={{ fontSize: '1rem', color: '#555' }}>React로 만든 푸터입니다 ⚛️</h3>
+                    <p style={{ fontSize: '0.9rem', color: '#777' }}>e-mail: 2301491@kunsan.ac.kr</p>
+                </footer>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('react-footer'));
+        root.render(<Footer />);
+    </script>
 </body>
 </html>
