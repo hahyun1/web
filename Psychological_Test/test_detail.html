@@ -8,6 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="test_detail.css">
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
 
@@ -16,6 +20,7 @@
             <a class="icon_link" href="home.html">
                 <span class="logo-text">TestTalk</span>
             </a>
+
             <div class="menu-group">
                 <ul>
                     <li><a href="#" onclick="fetchAndRenderTests('연애'); return false;">연애</a></li>
@@ -24,6 +29,7 @@
                     <li><a href="#fortune" onclick="location.reload()">운세</a></li> 
                 </ul>
             </div>
+
             <div class="right-group">
                 <div class="search-bar">
                     <input type="text" placeholder="테스트 검색...">
@@ -38,25 +44,56 @@
         </nav>
     </header>
     
-    <div class="section main-content section-content">
-        <h1 id="detailTitle" class="main-title section-title">로딩 중...</h1>
-        
-        <img id="detailImage" src="" alt="테스트 썸네일" class="intro-image"> 
-        
-        <p id="detailDesc" class="intro-description">
-            잠시만 기다려주세요...
-        </p>
+    <main class="detail-main">
+        <div class="top-visual-section">
+            <div class="image-wrapper">
+                <img id="detailImage" src="" alt="테스트 커버 이미지">
+                
+                <span id="categoryTag" class="category-badge">성격</span>
 
-        <a id="startBtn" href="#" class="start-button">
-            테스트 시작하기
-        </a> 
-    </div>
+                <div class="action-buttons">
+                    <button class="icon-btn heart-btn"><i class="far fa-heart"></i></button>
+                    </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h1 id="detailTitle" class="test-title">로딩 중...</h1>
+            <p id="detailDesc" class="test-desc">잠시만 기다려주세요...</p>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <i class="far fa-clock"></i>
+                    <span>2분</span>
+                    <p>소요 시간</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-star"></i>
+                    <span id="questionCount">12개</span>
+                    <p>질문 수</p>
+                </div>
+                <div class="info-card">
+                    <i class="far fa-user"></i>
+                    <span id="participantCount">15,234</span>
+                    <p>참여자 수</p>
+                </div>
+            </div>
+
+            <a id="startBtn" href="#" class="start-btn-large">
+                <i class="fas fa-play"></i> 테스트 시작하기
+            </a>
+
+            <div class="like-status">
+                👤 <span id="participantCountBottom">0</span>명이 참여했어요
+            </div>
+        </div>
+    </main>
 
     <footer class="footer">
         <p>e-mail: 2301491@kunsan.ac.kr</p>
     </footer>
 
+    <script src="common.js"></script> 
     <script src="test_detail.js"></script>
-
 </body>
 </html>

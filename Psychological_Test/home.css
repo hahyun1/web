@@ -163,7 +163,7 @@ header.hide { transform: translateY(-100%); }
 /* 우측 상단 카테고리 태그 */
 .category-tag {
     position: absolute; top: 15px; right: 15px;
-    background: rgba(255, 255, 255, 0.9); color: var(--point-green);
+    background: rgba(234, 234, 234, 0.9); color: #8F9F85;
     padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; font-weight: bold; font-family: 'Jua', sans-serif;
 }
 

@@ -93,6 +93,15 @@ const Visitor = mongoose.model('Visitor', visitorSchema);
    [5] API 라우트 정의
 ========================================================= */
 
+// 로그인 인증 확인 미들웨어
+const isAuthenticated = (req, res, next) => {
+    if (req.session.user) {
+        next(); // 로그인 상태면 통과
+    } else {
+        res.status(401).json({ message: '로그인이 필요합니다.' }); // 비로그인 시 거부
+    }
+};
+
 // --- 5-0. 회원 관리 API (로그인/회원가입/로그아웃) ---
 
 // 1. 회원가입
@@ -438,6 +447,241 @@ app.delete('/api/results/:id', (req, res) => {
         res.json({ message: 'Result Deleted' });
     });
 });
+
+// 7. 테스트 결과 제출 및 기록 (참여 내역 기록)
+app.post('/api/test/submit', isAuthenticated, (req, res) => {
+    // 로그인된 사용자 ID
+    const userId = req.session.user.id; 
+    
+    // 프론트에서 보낸 데이터 받기
+    // result: "강아지상" 같은 텍스트 (AI 테스트용)
+    // result_id: 5 같은 숫자 ID (심리테스트용)
+    // score: 90 같은 점수 (또는 확률)
+    const { test_id, score, result_id, result } = req.body;
+    
+    if (!test_id) {
+        return res.status(400).json({ message: '테스트 ID는 필수 항목입니다.' });
+    }
+
+    // 결과 텍스트 결정 로직: 
+    // 프론트에서 result(텍스트)를 보냈으면 그걸 쓰고, 아니면 null
+    const resultText = result ? result : null;
+
+    // 점수 처리: 점수가 없으면 0으로 처리 (에러 방지)
+    const finalScore = score !== undefined ? score : 0;
+
+    const sql = `
+        INSERT INTO test_history (user_id, test_id, score, result_id, result_title, completed_at)
+        VALUES (?, ?, ?, ?, ?, NOW())
+    `;
+    
+    // 순서 중요: userId, test_id, score, result_id, resultText
+    db.query(sql, [userId, test_id, finalScore, result_id || null, resultText], (err, dbResult) => {
+        if (err) {
+            console.error("결과 기록 오류:", err);
+            return res.status(500).json({ message: '결과 저장 중 서버 오류가 발생했습니다.' });
+        }
+        
+        res.json({ message: '결과가 성공적으로 기록되었습니다.', historyId: dbResult.insertId });
+    });
+});
+
+// --- 5-5. 마이페이지 API ---
+
+// 1. 사용자 프로필 및 통계 조회
+app.get('/api/mypage/stats', isAuthenticated, (req, res) => {
+    const userId = req.session.user.id;
+    const nickname = req.session.user.nickname;
+    
+    // 좋아요 수 카운트
+    const likesSql = 'SELECT COUNT(*) AS like_count FROM likes WHERE user_id = ?';
+    db.query(likesSql, [userId], (err, likesResult) => {
+        if (err) return res.status(500).json({ message: '좋아요 카운트 서버 에러', error: err });
+
+        const likeCount = likesResult[0].like_count;
+
+        // 참여 내역 수 카운트
+        // NOTE: 'test_history' 테이블을 미리 생성했어야 합니다.
+        const historySql = 'SELECT COUNT(*) AS history_count FROM test_history WHERE user_id = ?';
+        db.query(historySql, [userId], (err, historyResult) => {
+            if (err) return res.status(500).json({ message: '참여 내역 카운트 서버 에러', error: err });
+            
+            const historyCount = historyResult[0].history_count;
+
+            // 최종 응답: 닉네임과 통계 정보 반환
+            res.json({
+                nickname: nickname,
+                likeCount: likeCount,
+                historyCount: historyCount
+            });
+        });
+    });
+});
+
+
+// 2. 좋아요한 테스트 목록 조회
+app.get('/api/mypage/liked', isAuthenticated, (req, res) => {
+    const userId = req.session.user.id;
+    
+    const sql = `
+        SELECT t.id, t.title, t.thumbnail, t.category
+        FROM tests t
+        JOIN likes l ON t.id = l.test_id
+        WHERE l.user_id = ?
+        ORDER BY l.created_at DESC`;
+        
+    db.query(sql, [userId], (err, results) => {
+        if (err) return res.status(500).json({ message: '좋아요 목록 서버 에러', error: err });
+        res.json(results);
+    });
+});
+
+// 3. 참여 내역 목록 조회 
+app.get('/api/mypage/history', isAuthenticated, (req, res) => {
+    const userId = req.session.user.id;
+    
+    const sql = `
+        SELECT 
+            h.id AS history_id, 
+            h.completed_at, 
+            t.id AS test_id, 
+            t.title, 
+            t.thumbnail, 
+            t.category, 
+            
+            -- 1. r.result_title (기존 심리테스트 결과)이 있으면 그걸 보여줌
+            -- 2. 없으면 h.result_title (AI 테스트 결과)을 보여줌
+            COALESCE(r.result_title, h.result_title) AS result_title
+            
+        FROM test_history h
+        JOIN tests t ON h.test_id = t.id
+        LEFT JOIN results r ON h.result_id = r.id
+        WHERE h.user_id = ?
+        ORDER BY h.completed_at DESC`;
+        
+    db.query(sql, [userId], (err, results) => {
+        if (err) {
+            console.error("내역 조회 에러:", err); // 에러 로그 확인용 추가
+            return res.status(500).json({ message: '참여 내역 서버 에러', error: err });
+        }
+        res.json(results);
+    });
+});
+
+// 4. 닉네임 변경 API (중복 검사 기능 추가)
+app.put('/api/mypage/nickname', isAuthenticated, (req, res) => {
+    const userId = req.session.user.id;
+    const { nickname } = req.body;
+
+    if (!nickname) return res.status(400).json({ message: '닉네임을 입력해주세요.' });
+
+    // [Step 1] 먼저 해당 닉네임을 쓰는 사람이 있는지 검사
+    const checkSql = 'SELECT id FROM users WHERE nickname = ?';
+    
+    db.query(checkSql, [nickname], (err, rows) => {
+        if (err) return res.status(500).json({ message: 'DB 검사 오류', error: err });
+
+        // rows가 존재한다면(길이가 0보다 크다면) 이미 누군가 쓰고 있다는 뜻
+        if (rows.length > 0) {
+            return res.status(409).json({ message: '이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.' });
+        }
+
+        // [Step 2] 중복이 없을 때만 업데이트 진행 (기존 코드)
+        const updateSql = 'UPDATE users SET nickname = ? WHERE id = ?';
+        db.query(updateSql, [nickname, userId], (err, result) => {
+            if (err) return res.status(500).json({ message: '닉네임 변경 실패', error: err });
+            
+            // 세션 정보도 업데이트해야 새로고침 시 바로 반영됨
+            req.session.user.nickname = nickname;
+            req.session.save(() => {
+                res.json({ message: '닉네임 변경 성공' });
+            });
+        });
+    });
+});
+
+// 5. 비밀번호 변경 API
+app.put('/api/mypage/password', isAuthenticated, (req, res) => {
+    const userId = req.session.user.id;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: '모든 항목을 입력해주세요.' });
+    }
+
+    // 1. 현재 비밀번호가 맞는지 확인
+    db.query('SELECT password FROM users WHERE id = ?', [userId], async (err, results) => {
+        if (err) return res.status(500).json({ message: '서버 에러' });
+        
+        const user = results[0];
+        const match = await bcrypt.compare(currentPassword, user.password);
+
+        if (!match) {
+            return res.status(401).json({ message: '현재 비밀번호가 틀렸습니다.' });
+        }
+
+        // 2. 새 비밀번호 암호화 후 업데이트
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        
+        db.query('UPDATE users SET password = ? WHERE id = ?', [hashedNewPassword, userId], (updateErr) => {
+            if (updateErr) return res.status(500).json({ message: '비밀번호 변경 실패' });
+            res.json({ message: '비밀번호 변경 성공' });
+        });
+    });
+});
+
+
+// --- 5.6 좋아요 기능 (조회 & 토글) ---
+
+// [1] 좋아요 상태 확인 (GET) 
+app.get('/api/tests/:id/like/status', (req, res) => {
+    // 비로그인 상태면 무조건 false
+    if (!req.session.user) {
+        return res.json({ liked: false });
+    }
+
+    const userId = req.session.user.id;
+    const testId = req.params.id;
+
+    const sql = 'SELECT * FROM likes WHERE user_id = ? AND test_id = ?';
+    db.query(sql, [userId, testId], (err, results) => {
+        if (err) return res.status(500).send('DB Error');
+        // 결과가 있으면 true, 없으면 false
+        res.json({ liked: results.length > 0 });
+    });
+});
+
+// [2] 좋아요 토글 (POST) 
+app.post('/api/tests/:id/like', (req, res) => {
+    // 1. 로그인 체크 (미들웨어 대신 직접 확인)
+    if (!req.session.user) {
+        return res.status(401).json({ message: '로그인이 필요합니다.' });
+    }
+    
+    const userId = req.session.user.id;
+    const testId = req.params.id;
+
+    // 2. 이미 좋아요 했는지 확인
+    const checkSql = 'SELECT * FROM likes WHERE user_id = ? AND test_id = ?';
+    db.query(checkSql, [userId, testId], (err, results) => {
+        if (err) return res.status(500).json({ message: 'DB Error' });
+
+        if (results.length > 0) {
+            // 이미 했으면 -> 취소 (DELETE)
+            const deleteSql = 'DELETE FROM likes WHERE user_id = ? AND test_id = ?';
+            db.query(deleteSql, [userId, testId], () => {
+                res.json({ liked: false, message: '좋아요 취소' });
+            });
+        } else {
+            // 안 했으면 -> 추가 (INSERT)
+            const insertSql = 'INSERT INTO likes (user_id, test_id) VALUES (?, ?)';
+            db.query(insertSql, [userId, testId], () => {
+                res.json({ liked: true, message: '좋아요 성공' });
+            });
+        }
+    });
+});
+
 
 
 /* =========================================================

@@ -41,7 +41,9 @@ function readURL(input) {
 
 // [3] 예측 함수
 async function predict() {
-    document.getElementById('loading-msg').style.display = 'block';
+    const loadingMsg = document.getElementById('loading-msg');
+    if(loadingMsg) loadingMsg.style.display = 'block';
+
     document.getElementById("label-container").innerHTML = ""; 
     
     if (!model) await init(); // 모델이 없으면 로드
@@ -56,6 +58,7 @@ async function predict() {
 
     // 1등 결과 가져오기
     const bestClass = prediction[0].className;
+    // 확률을 정수로 변환 (예: 98)
     const bestScore = (prediction[0].probability * 100).toFixed(0);
 
     // 결과 화면 표시
@@ -68,8 +71,53 @@ async function predict() {
     document.getElementById("label-container").innerHTML = resultMsg;
     
     console.log(prediction); // 디버깅용
-    document.getElementById('loading-msg').style.display = 'none';
+    if(loadingMsg) loadingMsg.style.display = 'none';
+
+    // ★ [수정됨] 결과(Text)와 점수(Score)를 함께 서버로 전송
+    await saveResultToServer(bestClass, bestScore);
 }
 
+// 서버 저장 함수
+async function saveResultToServer(resultString, scoreVal) {
+
+    const CURRENT_TEST_ID = 5; 
+
+    console.log(`결과 저장 시도: ${resultString}, 점수: ${scoreVal}`);
+
+    // 1. 로그인 체크
+    if (typeof checkAuthentication === 'function') {
+        const user = await checkAuthentication();
+        // user가 null이면(비로그인) alert 없이 조용히 리턴하거나, 
+        // 필요하면 "로그인이 필요합니다" 알림을 띄울 수 있습니다.
+        if (!user) {
+            console.log("비로그인 상태라 저장하지 않습니다.");
+            return;
+        }
+    }
+
+    // 2. 서버로 전송
+    try {
+        const response = await fetch(`${SERVER_URL}/api/test/submit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                test_id: CURRENT_TEST_ID, 
+                result: resultString,     // 예: "강아지상"
+                score: scoreVal           // 예: 98 (확률)
+            })
+        });
+
+        if (response.ok) {
+            console.log("결과가 마이페이지에 저장되었습니다!");
+        } else {
+            const errData = await response.json();
+            console.error("저장 실패:", errData.message);
+        }
+    } catch (error) {
+        console.error("서버 통신 오류:", error);
+    }
+}
 // 실행
 init();

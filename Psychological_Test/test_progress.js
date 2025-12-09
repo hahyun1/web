@@ -146,6 +146,9 @@ function showResult() {
                 <p style="font-size:1.1rem; line-height:1.6; color:#555;">${finalResult.result_desc}</p>
             </div>
         `;
+        // 결과를 찾았으니 서버에 저장 요청
+        saveTestResult(testId, totalScore, finalResult.id);
+
     } else {
         document.getElementById("resultText").innerText = "해당 점수에 맞는 결과가 없습니다. (관리자에게 문의하세요)";
         console.log("총점:", totalScore); // 디버깅용 점수 출력
@@ -154,4 +157,24 @@ function showResult() {
     // 다시하기 버튼 링크 (첫 화면으로)
     const restartBtn = document.querySelector('.restart-btn');
     if(restartBtn) restartBtn.href = `test_detail.html?id=${testId}`;
+}
+
+// 테스트 저장
+async function saveTestResult(testId, score, resultId) {
+    if (!testId) return; // 테스트 ID가 없으면 저장 안 함
+
+    try {
+        const response = await fetch(`${SERVER_URL}/api/test/submit`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                test_id: testId,    // 현재 푼 테스트 ID (예: 1)
+                score: score || 0,  // 점수 (없으면 0)
+                result_id: resultId // 나온 결과 ID (DB에 있는 result id)
+            }),
+        });
+        console.log("결과 저장 완료!");
+    } catch (error) {
+        console.error("결과 저장 실패:", error);
+    }
 }

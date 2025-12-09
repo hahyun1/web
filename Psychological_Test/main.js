@@ -1,11 +1,6 @@
-/* ==========================================================================
- * 1. 서버 설정 (백엔드 주소)
- * ========================================================================== */
-const TEST_API_URL = "http://localhost:3000/api/tests"; 
-const SERVER_URL = "http://localhost:3000"; // 이미지 경로용 기본 주소
 
 /* ==========================================================================
- * 2. 페이지 초기화 + 검색 이벤트 등록
+ * 페이지 초기화 + 검색 이벤트 등록
  * ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
     initScrollHeader();     
@@ -18,12 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.querySelector('.search-bar input');
 
     // 키보드를 뗄 때마다 검색 함수 실행
-    searchInput.addEventListener('keyup', async (event) => {
-        const query = event.target.value.trim();
-        
-        // [수정] 검색 키워드를 fetchAndRenderTests 함수에 전달하여 목록 필터링 실행
-        await fetchAndRenderTests(query);
-    });
+    // 검색창이 있을 때만 이벤트 연결 
+    if (searchInput) {
+        searchInput.addEventListener('keyup', async (event) => {
+            const query = event.target.value.trim();
+            await fetchAndRenderTests(query);
+        });
+    }
 });
 
 
@@ -226,38 +222,34 @@ function countVisit(id) {
         .catch(err => console.error("조회수 집계 오류:", err));
 }
 
-/* ==========================================================================
- * 8. 로그인 상태 관리 및 헤더 변경 
- * ========================================================================== */
-async function checkLoginStatus() {
-    try {
-        const response = await fetch(`${SERVER_URL}/api/auth/status`);
-        const data = await response.json();
-        
-        const loginGroup = document.querySelector('.login-group');
-        
-        if (data.loggedIn) {
-            // [로그인 상태] 닉네임과 로그아웃 버튼 표시
-            loginGroup.innerHTML = `
-                <li style="color:#8D8276;"><span style="font-weight:bold; color:#8F9F85;">${data.user.nickname}</span>님</li>
-                <li><span style="color:#ddd; margin:0 10px;">|</span></li>
-                <li><a href="#" onclick="handleLogout()" style="color:#8D8276;">로그아웃</a></li>
-            `;
-        } else {
-            // [비로그인 상태] 기존 로그인/회원가입 링크 유지 
-        }
-    } catch (err) {
-        console.error("로그인 상태 확인 실패:", err);
-    }
-}
 
-// 로그아웃 함수 (전역)
-async function handleLogout() {
-    try {
-        await fetch(`${SERVER_URL}/api/logout`, { method: 'POST' });
-        alert("로그아웃 되었습니다.");
-        location.reload(); // 페이지 새로고침해서 상태 반영
-    } catch (err) {
-        console.error("로그아웃 오류:", err);
+/* ==========================================================================
+ * 7. 좋아요 토글 기능
+ * ========================================================================== */
+async function toggleLikeStatus(testId, element) {
+    const response = await fetch(`${SERVER_URL}/api/tests/${testId}/like`, { method: 'POST' });
+    const data = await response.json();
+    
+    if (response.status === 401) {
+        alert("좋아요 기능은 로그인 후 이용 가능합니다.");
+        return;
+    }
+    
+    if (response.ok) {
+        // UI 즉시 업데이트 (하트 색상 변경 등)
+        if (data.liked) {
+            alert("좋아요를 눌렀습니다!");
+        } else {
+            alert("좋아요를 취소했습니다!");
+        }
+        
+        // 마이페이지라면 목록을 새로고침
+        if (window.location.pathname.includes('mypage.html')) {
+            loadUserProfileAndStats();
+            fetchLikedTests();
+        }
+        
+    } else {
+        alert(`좋아요 처리 실패: ${data.message || '서버 오류'}`);
     }
 }
