@@ -1,37 +1,62 @@
 /* ==========================================================================
- * 1. 서버 설정
+ * 1. 서버 설정 (백엔드 주소)
  * ========================================================================== */
 const TEST_API_URL = "http://localhost:3000/api/tests"; 
-const SERVER_URL = "http://localhost:3000"; 
+const SERVER_URL = "http://localhost:3000"; // 이미지 경로용 기본 주소
 
 /* ==========================================================================
- * 2. 페이지 초기화
+ * 2. 페이지 초기화 + 검색 이벤트 등록
  * ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
     initScrollHeader();     
-    fetchAndRenderTests();      // 전체 목록 (하단)
-    fetchAndRenderTop3();       
+    fetchAndRenderTop3(); 
+    fetchAndRenderTests();  // 초기에는 전체 목록을 로드 (query='')
     initFortuneCookie();
+
+    // 검색 입력창 요소 가져오기
+    const searchInput = document.querySelector('.search-bar input');
+
+    // 키보드를 뗄 때마다 검색 함수 실행
+    searchInput.addEventListener('keyup', async (event) => {
+        const query = event.target.value.trim();
+        
+        // [수정] 검색 키워드를 fetchAndRenderTests 함수에 전달하여 목록 필터링 실행
+        await fetchAndRenderTests(query);
+    });
 });
 
 /* ==========================================================================
- * 3. 전체 심리테스트 목록 (하단 그리드)
+ * 3. 전체 심리테스트 목록 (하단 그리드) 
  * ========================================================================== */
-async function fetchAndRenderTests() {
+async function fetchAndRenderTests(query = '') {
     const container = document.querySelector('.test-grid-container');
     if (!container) return;
 
+    const API_ENDPOINT = query 
+        ? `${TEST_API_URL}/search?q=${encodeURIComponent(query)}`
+        : TEST_API_URL;
+
     try {
-        const response = await fetch(TEST_API_URL);
+        const response = await fetch(API_ENDPOINT);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const testData = await response.json(); 
 
+        // 데이터가 없을 때 (검색 결과 없음)
         if (!testData || testData.length === 0) {
-            container.innerHTML = '<p style="text-align:center; width:100%; padding: 40px; color: #888;">등록된 테스트가 없습니다.</p>';
+            container.innerHTML = `<p style="text-align:center; width:100%; padding: 40px; color: #888;">'${query}'에 해당하는 테스트가 없습니다.</p>`;
             return;
         }
 
+        // HTML 생성
         container.innerHTML = testData.map(test => {
-            const imageUrl = test.thumbnail ? `${SERVER_URL}${test.thumbnail}` : 'https://via.placeholder.com/400x250/E0E0E0/888888?text=No+Image';
+            const imageUrl = test.thumbnail 
+                ? `${SERVER_URL}${test.thumbnail}` 
+                : 'https://via.placeholder.com/400x250/E0E0E0/888888?text=No+Image';
+
             return `
             <a href="test_detail.html?id=${test.id}" class="test-item">
                 <div class="thumb" style="background-image: url('${imageUrl}')"></div>
@@ -41,7 +66,8 @@ async function fetchAndRenderTests() {
         }).join('');
 
     } catch (error) {
-        console.error("전체 목록 로드 실패:", error);
+        console.error("목록 로드 실패:", error);
+        container.innerHTML = '<p style="text-align:center; width:100%; padding: 40px; color: red;">서버 연결 오류</p>';
     }
 }
 
@@ -52,42 +78,60 @@ async function fetchAndRenderTop3() {
     const track = document.querySelector('.highlight-track');
     if (!track) return;
 
+    // [수정] 백엔드에 최신/인기 목록만 요청하는 전용 엔드포인트를 사용한다고 가정
+    const TOP3_API_URL = `${TEST_API_URL}/recent`; 
+
     try {
-        const response = await fetch(TEST_API_URL);
-        const allTests = await response.json();
+        const response = await fetch(TOP3_API_URL);
+        const recentTests = await response.json();
 
-        // 최신순 3개만 자르기
-        const recentTests = allTests.slice(0, 3); 
-
-        if (recentTests.length === 0) {
+        if (!recentTests || recentTests.length === 0) {
             track.innerHTML = '<div style="padding:20px; color:#999;">추천 콘텐츠 준비 중</div>';
             return;
         }
 
         // HTML 생성
-        track.innerHTML = recentTests.map((test, index) => {
-            const imageUrl = test.thumbnail ? `${SERVER_URL}${test.thumbnail}` : null;
-            
-            let style = "";
-            if (imageUrl) {
-                // 이미지만 꽉 차게 보여줌 (글씨 그림자 제거)
-                style = `
-                    background-image: url('${imageUrl}');
-                    background-size: cover;
-                    background-position: center;
-                `;
-            } else {
-                // 이미지가 없을 땐 파스텔톤 배경만
-                const bgColors = ["#E6F0FA", "#FFF0F0", "#F5E6FA"];
-                const bg = bgColors[index % bgColors.length];
-                style = `background-color: ${bg};`;
-            }
+track.innerHTML = recentTests.map((test, index) => {
+    const imageUrl = test.thumbnail ? `${SERVER_URL}${test.thumbnail}` : null;
+    
+    // 1. 이미지 영역 스타일 설정
+    let imageStyle = `
+        width: 100%; 
+        height: 180px; 
+        border-radius: 12px; 
+        background-size: cover; 
+        background-position: center;
+        margin-bottom: 12px;
+    `;
 
-            return `
-            <a href="test_detail.html?id=${test.id}" class="highlight-slide" style="${style}" title="${test.title}">
-                </a>
-            `;
-        }).join('');
+    if (imageUrl) {
+        imageStyle += `background-image: url('${imageUrl}');`;
+    } else {
+        const bgColors = ["#E6F0FA", "#FFF0F0", "#F5E6FA"];
+        const bg = bgColors[index % bgColors.length];
+        imageStyle += `background-color: ${bg};`;
+    }
+
+    // 2. HTML 구조 반환 (이미지 박스 위, 텍스트 아래 배치)
+    return `
+    <a href="test_detail.html?id=${test.id}" class="highlight-slide" style="text-decoration: none; display: block;">
+        <div style="${imageStyle}"></div>
+
+        <div style="text-align: center; padding: 0 5px;">
+            <p style="
+                color: #4A3B32; 
+                font-size: 1.1rem; 
+                font-weight: bold; 
+                margin: 0;
+                line-height: 1.4;
+                word-break: keep-all;
+            ">
+                ${test.title}
+            </p>
+        </div>
+    </a>
+    `;
+}).join('');
 
     } catch (error) {
         console.error("추천 목록 로드 실패:", error);
@@ -105,10 +149,12 @@ function initScrollHeader() {
 
     window.addEventListener("scroll", () => {
         const currentScrollY = window.scrollY;
+
         if (currentScrollY <= 0) {
             header.classList.remove("hide");
             return;
         }
+
         if (Math.abs(currentScrollY - lastScrollY) > 10) {
             if (currentScrollY > lastScrollY) header.classList.add("hide");
             else header.classList.remove("hide");
@@ -123,11 +169,10 @@ function initScrollHeader() {
 function initFortuneCookie() {
     const fortuneBtn = document.querySelector('.fortune-btn');
     const cookieIconArea = document.querySelector('.fortune-cookie-icon');
-    const fortuneContainer = document.querySelector('.fortune-container p'); // "포춘 쿠키를 깨보세요" 텍스트 부분
+    const fortuneContainer = document.querySelector('.fortune-container p');
 
     if (!fortuneBtn || !cookieIconArea) return;
 
-    // 운세 메시지 목록 
     const fortuneMessages = [
         "🎉 오늘은 당신의 날! 뜻밖의 행운이 찾아올 거예요.",
         "😌 잠시 휴식을 취하세요. 재충전이 필요한 시기입니다.",
@@ -142,17 +187,14 @@ function initFortuneCookie() {
     ];
 
     fortuneBtn.addEventListener('click', () => {
-        // 1. 버튼 중복 클릭 방지 및 텍스트 변경
         fortuneBtn.disabled = true;
         fortuneBtn.innerText = "운세를 확인했습니다!";
         fortuneContainer.innerText = "오늘의 운세가 나왔습니다!";
 
-        // 2. 쿠키 흔들리는 애니메이션 시작
+        // 애니메이션 시작 (CSS에서 bounce 애니메이션 사용 가정)
         cookieIconArea.classList.add('shaking');
 
-        // 3. 0.5초 후 쿠키가 깨지고 메시지 등장
         setTimeout(() => {
-            // 랜덤 메시지 선택
             const randomIndex = Math.floor(Math.random() * fortuneMessages.length);
             const selectedMessage = fortuneMessages[randomIndex];
 
@@ -163,8 +205,7 @@ function initFortuneCookie() {
                 </div>
             `;
             
-            // 흔들림 클래스 제거
             cookieIconArea.classList.remove('shaking');
-        }, 500); // 0.5초 대기 (애니메이션 시간과 맞춤)
+        }, 500); 
     });
 }

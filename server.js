@@ -179,7 +179,34 @@ app.get('/api/tests', (req, res) => {
     });
 });
 
-// 2. 특정 심리테스트 상세 정보 & 질문 가져오기
+// 2. 심리테스트 검색 API 
+app.get('/api/tests/search', (req, res) => {
+    const { q } = req.query;
+    if (!q) return res.json([]);
+
+    const sql = `SELECT * FROM tests WHERE title LIKE ? OR description LIKE ? ORDER BY id DESC`;
+    const searchTerm = `%${q}%`;
+    
+    db.query(sql, [searchTerm, searchTerm], (err, results) => {
+        if (err) {
+            console.error("검색 오류:", err);
+            return res.status(500).send(err);
+        }
+        res.json(results);
+    });
+});
+
+// 3. 최신 등록 테스트 3개 가져오기 (Best 3 표시용)
+app.get('/api/tests/recent', (req, res) => {
+    // DB에 등록된 ID를 기준으로 최신순으로 정렬
+    const sql = 'SELECT id, title, thumbnail FROM tests ORDER BY id DESC LIMIT 3'; 
+    db.query(sql, (err, results) => {
+        if (err) return res.status(500).send(err);
+        res.json(results);
+    });
+});
+
+// 4. 특정 심리테스트 상세 정보 & 질문 가져오기
 app.get('/api/tests/:id', (req, res) => {
     const { id } = req.params;
     
@@ -188,7 +215,10 @@ app.get('/api/tests/:id', (req, res) => {
     
     db.query(testSql, [id], (err, testResult) => {
         if (err) return res.status(500).send(err);
-        if (testResult.length === 0) return res.status(404).send('Test not found');
+        
+        if (testResult.length === 0) {
+            return res.status(404).json({ error: 'Test not found', message: '해당 테스트를 찾을 수 없습니다.' });
+        }
 
         db.query(questionsSql, [id], (err, questionsResult) => {
             if (err) return res.status(500).send(err);
@@ -201,7 +231,7 @@ app.get('/api/tests/:id', (req, res) => {
     });
 });
 
-// 3. 심리테스트 등록
+// 5. 심리테스트 등록
 app.post('/api/tests', upload.single('thumbnail'), (req, res) => {
     const { title, description } = req.body;
     const thumbnail = req.file ? `/uploads/${req.file.filename}` : null;
@@ -213,7 +243,7 @@ app.post('/api/tests', upload.single('thumbnail'), (req, res) => {
     });
 });
 
-// 4. 심리테스트 수정
+// 6. 심리테스트 수정
 app.put('/api/tests/:id', upload.single('thumbnail'), (req, res) => {
     const { title, description } = req.body;
     const { id } = req.params;
@@ -233,7 +263,7 @@ app.put('/api/tests/:id', upload.single('thumbnail'), (req, res) => {
     });
 });
 
-// 5. 심리테스트 삭제
+// 7. 심리테스트 삭제
 app.delete('/api/tests/:id', (req, res) => {
     db.query('DELETE FROM tests WHERE id=?', [req.params.id], (err, result) => {
         if (err) return res.status(500).send(err);
@@ -259,7 +289,12 @@ app.post('/api/questions', (req, res) => {
         test_id, question_text, question_order, 
         option_a, option_b, score_a, score_b 
     } = req.body;
-    
+
+    // 필수값 검증 추가
+    if (!test_id || !question_text || question_order === undefined) {
+        return res.status(400).json({ message: 'Missing required question fields (test_id, text, order)' });
+    }
+
     const sql = `INSERT INTO questions 
         (test_id, question_text, question_order, option_a, option_b, score_a, score_b) 
         VALUES (?, ?, ?, ?, ?, ?, ?)`; 
@@ -310,7 +345,7 @@ app.delete('/api/results/:id', (req, res) => {
    [6] 페이지 라우팅 및 서버 시작
 ========================================================= */
 app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'index.html')); });
-app.get('/admin', (req, res) => { res.sendFile(path.join(__dirname, 'Portfolio/admin.html')); });
+app.use('/Portfolio', express.static(path.join(__dirname, 'Portfolio')));
 
 app.listen(PORT, () => {
     console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);

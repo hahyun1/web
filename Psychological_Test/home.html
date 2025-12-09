@@ -16,8 +16,8 @@
 <body>
     <header>  
         <nav class="Top_bar">
-            <a class="icon_link" href="home.html">
-                <span class="logo-text">TestTalk</span>
+            <a class="icon_link" href="../index.html">
+                <span class="logo-text">JHH Portfolio</span>
             </a>
 
             <div class="menu-group">
@@ -25,7 +25,7 @@
                     <li><a href="#">연애</a></li>
                     <li><a href="#">사회생활</a></li>
                     <li><a href="#">성격</a></li>
-                    <li><a href="face_test.html">얼굴상 테스트</a></li>
+                    <li><a href="#fortune">운세</a></li>
                 </ul>
             </div>
 
@@ -44,13 +44,13 @@
     </header>
 
     <section class="highlight-tests-carousel">
-        <h2 class="section-title" style="margin-bottom: 30px;">추천 콘텐츠</h2>
+        <h2 class="section-title" style="margin-bottom: 80px;">추천 콘텐츠</h2>
         <div class="carousel-window"> 
             <div class="highlight-track"></div>
         </div>
     </section>
 
-    <section class="today-fortune">
+    <section class="today-fortune" id="fortune">
         <div class="fortune-container">
             <h2>오늘의 운세</h2>
             <p>포춘 쿠키를 깨보세요 🥠</p>
@@ -73,7 +73,7 @@
     <script type="text/babel">
         function Footer() {
             return (
-                <footer className="footer" style={{ padding: '20px', textAlign: 'center', background: '#f1f1f1', marginTop: '50px', borderTop: '1px solid #ddd' }}>
+                <footer className="footer">
                     <h3 style={{ fontSize: '1rem', color: '#555' }}>React로 만든 푸터입니다 ⚛️</h3>
                     <p style={{ fontSize: '0.9rem', color: '#777' }}>e-mail: 2301491@kunsan.ac.kr</p>
                 </footer>
