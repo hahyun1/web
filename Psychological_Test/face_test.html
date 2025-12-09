@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동물상 테스트</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+<body>
+    
+    <div class="test-container" style="text-align: center; margin-top: 50px;">
+        <h1>인공지능 동물상 테스트 🤖</h1>
+        <p>얼굴 사진을 올리면 인공지능이 분석해줍니다!</p>
+
+        <div class="image-upload-wrap" style="margin: 30px 0;">
+            <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+        </div>
+
+        <img id="face-image" src="#" alt="your image" style="max-width: 300px; display: none; border-radius: 20px; margin: 0 auto;"/>
+        
+        <p id="loading-msg" style="display:none; font-weight:bold; color:blue;">AI가 분석 중입니다...</p>
+
+        <div id="label-container" style="margin-top: 20px; font-size: 1.2rem; font-weight: bold;"></div>
+        
+        <button onclick="window.location.reload()" style="margin-top:20px; padding:10px 20px; cursor:pointer;">다시 하기</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+    <script>
+        // 내 모델 주소 (Teachable Machine에서 '모델 업로드' 후 받은 주소인지 꼭 확인!)
+        const URL = "https://teachablemachine.withgoogle.com/models/czdYxUrKK/";
+
+        let model, labelContainer, maxPredictions;
+
+        // [1] 모델 불러오기
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+
+            try {
+                model = await tmImage.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
+                console.log("모델 로딩 완료!");
+            } catch (e) {
+                console.error("모델 로딩 실패:", e);
+                alert("AI 모델을 불러오는데 실패했습니다.");
+            }
+        }
+
+        // [2] 이미지 업로드 및 분석
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const img = document.getElementById('face-image');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    
+                    // ★ 중요: 이미지가 화면에 다 그려진 후에 AI에게 넘겨야 함
+                    img.onload = function() {
+                        predict();
+                    };
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // [3] 예측 함수
+        async function predict() {
+            document.getElementById('loading-msg').style.display = 'block';
+            document.getElementById("label-container").innerHTML = ""; // 기존 결과 지우기
+            
+            if (!model) await init();
+
+            const image = document.getElementById("face-image");
+            
+            // 예측 실행
+            const prediction = await model.predict(image, false);
+            
+            // 확률 높은 순 정렬
+            prediction.sort((a, b) => b.probability - a.probability);
+
+            // 가장 높은 결과
+            const bestClass = prediction[0].className;
+            const bestScore = (prediction[0].probability * 100).toFixed(2);
+
+            // 화면 출력
+            const resultMsg = `당신은 <span style="color:red;">${bestScore}%</span>의 확률로 <br> <strong>${bestClass}</strong> 입니다!`;
+            document.getElementById("label-container").innerHTML = resultMsg;
+            
+            // 콘솔에 전체 확률 출력 (디버깅용)
+            console.log(prediction);
+
+            document.getElementById('loading-msg').style.display = 'none';
+        }
+
+        init(); 
+    </script>
+</body>
+</html>

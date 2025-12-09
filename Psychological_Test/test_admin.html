@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>심리테스트 관리 (Admin)</title>
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="test_admin.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a class="icon_link" href="home.html">
+                <span class="logo-text">TestTalk</span>
+            </a>
+        </div>
+
+        <nav>
+            <ul class="nav-list">
+                <li><a href="../Portfolio/admin.html">01. Portfolio admin</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="projects-section">
+        <div class="projects-wrapper">
+            
+            <div class="section-header">
+                <span class="deco-text">Psychological_Test</span>
+                <h1 id="test-form-title">Upload Test</h1>
+            </div>
+
+            <form id="testForm" class="timeline-list">
+                
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">🧩</span>
+                            <label for="test_title" class="date-text">테스트 제목</label>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <input type="text" id="test_title" class="admin-input title-style" placeholder="예: 나의 연애 유형 테스트" required>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">📝</span>
+                            <label for="test_desc" class="date-text">설명</label>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <textarea id="test_desc" class="admin-textarea" placeholder="테스트에 대한 간단한 설명을 입력하세요."></textarea>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">🖼️</span>
+                            <label for="test_thumb" class="date-text">썸네일</label>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <input type="file" id="test_thumb" class="admin-input" accept="image/*">
+                        
+                        <div id="test-preview-container" style="margin-top: 10px; display: none;">
+                            <img id="test-img-preview" src="" style="max-width: 200px; border-radius: 8px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="project-date-col"></div>
+                    <div class="project-info-col">
+                        <div class="btn-group" style="display:flex; gap:10px;">
+                            <button type="button" class="view-detail submit-btn" onclick="uploadTest()">
+                                <i class="fas fa-check-circle"></i> 테스트 등록하기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            <div class="admin-list-section" style="margin-top: 60px;">
+                <h2 style="text-align:center; margin-bottom:20px; color:var(--primary-text); border-top:1px dashed var(--line-color); padding-top:30px;">
+                    📂 등록된 심리테스트 목록
+                </h2>
+                <ul id="admin-test-list" class="admin-list">
+                    </ul>
+            </div>
+            
+            <div style="margin: 60px 0; border-top: 2px dashed var(--line-color);"></div>
+
+            <section id="detail-manager" class="timeline-list" style="display:none; padding-bottom: 20px;">
+                <h2 id="managing-title" style="text-align: center; margin-bottom: 30px;">테스트 상세 관리</h2>
+                
+                <input type="hidden" id="current-test-id">
+
+                <div class="timeline-item">
+                    <div class="project-date-col">
+                        <div class="date-wrapper">
+                            <span class="date-icon">⚙️</span>
+                            <label class="date-text">관리 탭</label>
+                        </div>
+                    </div>
+                    <div class="project-info-col">
+                        <div style="margin-bottom:15px; display:flex; gap:10px;">
+                            <button type="button" onclick="showTab('q')" class="submit-btn" style="color:var(--primary-text); border-color:var(--secondary-text);">질문 관리</button>
+                            <button type="button" onclick="showTab('r')" class="submit-btn" style="color:var(--primary-text); border-color:var(--secondary-text);">결과 관리</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr style="border: 0; border-top: 1px solid #ddd; margin: 20px 0;">
+
+                <div id="tab-questions">
+                    <h3>질문 추가</h3>
+                    <div class="timeline-item">
+                        <div class="project-date-col"></div>
+                        <div class="project-info-col" style="display:flex; gap:10px;">
+                            <input type="number" id="q_order" placeholder="순서" class="admin-input" style="width: 80px;" min="1">
+                            <input type="text" id="q_text" placeholder="질문 내용" class="admin-input" style="flex-grow: 1;">
+                        </div>
+                    </div>
+                
+                    <div class="timeline-item">
+                        <div class="project-date-col">
+                            <div class="date-wrapper">
+                                <span class="date-icon">✍️</span>
+                                <label for="q_option_a" class="date-text">보기 A/B</label>
+                            </div>
+                        </div>
+                        <div class="project-info-col">
+                            <div style="margin-bottom:10px; display:flex; gap:10px; align-items:center;">
+                                <input type="text" id="q_option_a" placeholder="보기 A (예: 그렇다)" class="admin-input">
+                                <input type="number" id="q_score_a" placeholder="A 점수" class="admin-input" style="width: 80px;">
+                            </div>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <input type="text" id="q_option_b" placeholder="보기 B (예: 아니다)" class="admin-input">
+                                <input type="number" id="q_score_b" placeholder="B 점수" class="admin-input" style="width: 80px;">
+                                <button onclick="addQuestion()" class="submit-btn" style="flex-shrink: 0;">질문 저장</button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    </div>
+
+                <div id="tab-results" style="display:none;">
+                    <h3>결과 추가</h3>
+                    <div class="timeline-item">
+                        <div class="project-date-col">
+                            <div class="date-wrapper">
+                                <span class="date-icon">🏆</span>
+                                <label for="r_title" class="date-text">제목 / 범위</label>
+                            </div>
+                        </div>
+                        <div class="project-info-col">
+                            <input type="text" id="r_title" placeholder="결과 제목 (예: 강아지형)" class="admin-input title-style">
+                            <textarea id="r_desc" placeholder="결과 설명" class="admin-textarea"></textarea>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <input type="number" id="r_min" placeholder="최소점수" class="admin-input" style="width: 80px;">
+                                <span>~</span>
+                                <input type="number" id="r_max" placeholder="최대점수" class="admin-input" style="width: 80px;">
+                                <button onclick="addResult()" class="submit-btn" style="flex-shrink: 0;">결과 저장</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h5 style="margin-top: 20px;">등록된 결과 목록</h5>
+                    <ul id="result-list" class="admin-list" style="margin-top: 10px;"></ul>
+                </div>
+            </section>
+            
+            <div style="margin-bottom: 60px;"></div>
+
+        </div> 
+    </section>
+    
+    <script src="test_admin.js"></script>
+</body>
+</html>

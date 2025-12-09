@@ -1,0 +1,371 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   [0] 필수 색상 변수 및 기본 설정
+   ========================================================================== */
+:root {
+    --bg-color: #FDFBF7;       /* 배경: 크림색 */
+    --white: #FFFFFF;          /* 카드 배경: 흰색 */
+    --primary-text: #4A3B32;   /* 메인 텍스트: 짙은 갈색 */
+    --secondary-text: #8D8276; /* 서브 텍스트: 연한 갈색 */
+    --point-green: #8F9F85;    /* 포인트: 녹색 */
+    --point-green2: #8f9f8566; /* 포인트: 더 연한 녹색 */
+    --line-color: #EBE5CE;     /* 라인 색상 */
+    --accent-color: #A69076;   /* 강조 색상 */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: var(--bg-color);
+    font-family: 'Gowun Dodum', sans-serif;
+    color: var(--primary-text);
+    line-height: 1.6;
+}
+
+a { text-decoration: none; color: inherit; transition: 0.3s; }
+ul { list-style: none; }
+
+
+/* ==========================================================================
+   [1] 헤더 
+   ========================================================================== */
+header {
+    background: transparent;
+    position: fixed; /* 상단 고정 */
+    width: 100%;
+    top: 0; left: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 50px;
+    transition: transform 0.3s ease-in-out;
+    background-color: rgba(253, 251, 247, 0.95); 
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid var(--line-color);
+}
+
+/* 로고 */
+.logo a {
+    font-family: 'Gowun Batang', serif;
+    font-size: 1.6rem;
+    font-weight: bold;
+    letter-spacing: -0.5px;
+    color: var(--primary-text);
+}
+.logo a:hover { color: var(--point-green); }
+
+/* 네비게이션 */
+.nav-list { display: flex; gap: 40px; }
+
+.nav-list li a {
+    font-size: 1.1rem;
+    color: var(--secondary-text);
+    position: relative;
+    display: block;
+    font-weight: 500;
+}
+
+.nav-list li a:hover { color: var(--primary-text); }
+
+/* 밑줄 애니메이션 */
+.nav-list li a::after {
+    content: '';
+    position: absolute;
+    width: 0; height: 2px;
+    bottom: -5px; left: 50%;
+    background-color: var(--point-green2);
+    transition: 0.3s;
+    transform: translateX(-50%);
+}
+.nav-list li:hover a::after { width: 100%; }
+
+
+/* ==========================================================================
+   [2] 전체 레이아웃 (중앙 정렬)
+   ========================================================================== */
+.projects-section {
+    width: 100%;
+    min-height: 100vh;
+    padding: 100px 20px 60px;
+    display: flex;
+    justify-content: center;
+}
+
+.projects-wrapper {
+    width: 100%;
+    max-width: 900px; /* 중앙 정렬 너비 제한 */
+    margin: 0 auto;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+}
+
+/* 섹션 헤더 밑줄 장식 */
+.section-header::after {
+    content: "";
+    display: block;
+    width: 40px; height: 2px;
+    background-color: var(--line-color);
+    margin: 12px auto 0;
+}
+
+.deco-text {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+h1#test-form-title {
+    font-family: 'Gowun Batang', serif;
+    font-size: 2.5rem;
+    color: var(--primary-text);
+    line-height: 1.3;
+}
+
+
+/* ==========================================================================
+   [3] 타임라인 리스트 (입력 폼 구조)
+   ========================================================================== */
+.timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 30px;
+}
+
+/* 타임라인 항목 (한 줄) */
+.timeline-item {
+    display: flex;
+    align-items: flex-start; /* 상단 기준 정렬 */
+    padding: 20px 0;
+    gap: 25px;
+    border-bottom: 1px dashed var(--line-color);
+}
+
+/* 좌측 라벨 컬럼 (고정 폭) */
+.project-date-col {
+    width: 150px; /* 라벨 영역 너비 */
+    flex-shrink: 0;
+    padding-top: 12px; 
+    text-align: left; /* 포트폴리오 스타일 (왼쪽 정렬) */
+}
+
+/* 라벨 스타일 */
+.date-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.date-icon { 
+    font-size: 1rem; 
+    color: var(--accent-color); /* 아이콘 색상 통일 */
+}
+
+.date-text {
+    font-family: 'Gowun Dodum', sans-serif;
+    font-size: 0.95rem;
+    color: var(--secondary-text); /* 라벨 색상 통일 */
+    font-weight: 600;
+}
+
+/* 우측 입력 필드 컬럼 (나머지 공간) */
+.project-info-col {
+    flex: 1;
+    min-width: 0;
+}
+
+
+/* ==========================================================================
+   [4] 입력 폼 디자인 (Input & Textarea)
+   ========================================================================== */
+.admin-input, 
+.admin-textarea {
+    width: 100%;
+    background-color: var(--white); 
+    border: 1px solid var(--line-color);
+    border-radius: 6px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    color: var(--primary-text);
+    box-sizing: border-box;
+    transition: 0.3s;
+    font-family: 'Gowun Dodum', sans-serif;
+}
+
+/* 제목 입력창 강조 */
+.admin-input.title-style {
+    font-family: 'Gowun Batang', serif;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border: none;
+    border-bottom: 2px solid var(--point-green); 
+    background: transparent;
+    padding-left: 0;
+    border-radius: 0;
+}
+
+.admin-input:focus, 
+.admin-textarea:focus {
+    outline: none;
+    border-color: var(--point-green);
+    box-shadow: 0 0 0 3px rgba(143, 159, 133, 0.1); 
+}
+
+.admin-textarea {
+    min-height: 150px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* 플레이스홀더 */
+.admin-input::placeholder,
+.admin-textarea::placeholder {
+    color: var(--secondary-text);
+    opacity: 0.6;
+    font-size: 0.95rem;
+}
+
+
+/* ==========================================================================
+   [5] 버튼 스타일
+   ========================================================================== */
+.btn-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* 메인 등록 버튼 */
+.submit-btn {
+    padding: 10px 25px;
+    background-color: var(--white);
+    border: 1px solid var(--secondary-text);
+    border-radius: 6px;
+    color: var(--secondary-text);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-family: 'Gowun Dodum', sans-serif;
+}
+
+.submit-btn:hover {
+    background: var(--point-green2);
+    border-color: var(--secondary-text);
+    color: var(--primary-text);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* 탭 버튼 활성화 스타일 */
+button.active { 
+    background-color: var(--point-green);
+    color: white;
+    border-color: var(--point-green);
+}
+
+
+/* ==========================================================================
+   [6] 질문/결과 목록 리스트
+   ========================================================================== */
+.admin-list-section {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 2px dashed var(--line-color);
+}
+
+.admin-list-section h2, 
+#managing-title, 
+h3, h5 {
+    color: var(--primary-text);
+    font-family: 'Gowun Batang', serif;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.admin-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-list li {
+    background: var(--white);
+    border: 1px solid transparent;
+    padding: 15px 20px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    transition: 0.3s;
+}
+
+.admin-list li:hover {
+    background: var(--point-green2);
+    border-color: var(--secondary-text);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.admin-list li button {
+    padding: 5px 10px;
+    border: 1px solid var(--line-color);
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--secondary-text);
+}
+.admin-list li button:hover {
+    background: var(--white);
+    color: var(--point-green);
+    border-color: var(--point-green);
+}
+
+
+/* ==========================================================================
+   [7] 파일 업로드 및 미리보기
+   ========================================================================== */
+input[type="file"].admin-input {
+    padding: 9px 12px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+#test-preview-container { 
+    margin-top: 15px;
+    padding: 15px;
+    background-color: var(--white);
+    border: 1px solid var(--line-color);
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.03);
+}
+
+#test-img-preview { 
+    max-width: 200px;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border: 1px solid #eee;
+    display: block;
+    margin: 0 auto;
+}

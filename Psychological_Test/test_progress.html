@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>심리 테스트 진행</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="test_progress.css">
+</head>
+<body>
+
+    <header>  
+        <nav class="Top_bar">
+            <a class="icon_link" href="home.html">
+                <span class="logo-text">TestTalk</span>
+            </a>
+            <div class="menu-group">
+                <ul>
+                    <li><a href="#">연애</a></li>
+                    <li><a href="#">사회생활</a></li>
+                    <li><a href="#">성격</a></li>
+                    <li><a href="#">운세</a></li>
+                </ul>
+            </div>
+            <div class="right-group">
+                <div class="search-bar">
+                    <input type="text" placeholder="테스트 검색...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                <ul class="login-group">
+                    <li><a href="#">로그인</a></li>
+                    /
+                    <li><a href="#">회원가입</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="test-intro">
+        <h1 id="testTitle" class="main-title">테스트 제목</h1>
+    </section>
+
+    <div id="question" class="section active">
+        <div id="questionText"></div>
+        <div id="options"></div>
+        <div id="submitContainer" style="display:none; margin-top: 20px;">
+            <button onclick="showResult()">결과 보기</button>
+        </div>
+    </div>
+
+    <div id="result" class="section">
+        <br>
+        <div id="resultText"></div>
+        <br><br>
+        <a href="test_detail.html" class="restart-btn">다시하기</a>
+    </div>
+
+    <footer class="footer">
+        <p>e-mail: 2301491@kunsan.ac.kr</p>
+    </footer>
+
+    <script src="test_progress.js"></script>
+</body>
+</html>

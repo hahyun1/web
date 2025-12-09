@@ -1,0 +1,287 @@
+@charset "UTF-8";
+/* =======================================================
+   0. 폰트 및 전역 변수 설정
+   ======================================================= */
+/* 폰트 불러오기 */
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap');
+
+/* [변수 설정] */
+:root {
+    --bg-color: #FDFBF7;        /* 배경: 크림색 */
+    --white: #FFFFFF;           /* 카드 배경: 흰색 */
+    --primary-text: #4A3B32;    /* 메인 텍스트: 짙은 갈색 */
+    --secondary-text: #8D8276;  /* 서브 텍스트: 연한 갈색 */
+    --point-green: #8F9F85;     /* 포인트: 녹색 */
+    --line-color: #EBE5CE;      /* 라인 색상 */
+    --shadow-soft: 0 10px 30px rgba(166, 144, 118, 0.1); /* 그림자 */
+}
+
+
+/* =======================================================
+   1. 기본 리셋 및 공통 스타일
+   ======================================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Gowun Dodum', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--primary-text);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, 
+.logo-text, 
+.menu-group a, 
+.fortune-btn, 
+.login-group a {
+    font-family: 'Jua', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: 0.3s;
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+
+/* =======================================================
+   2. 헤더 (Header)
+   ======================================================= */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: rgba(253, 251, 247, 0.95);
+    backdrop-filter: blur(5px);
+    transition: transform 0.3s ease-in-out;
+}
+
+header.hide {
+    transform: translateY(-100%);
+}
+
+.Top_bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 90px;
+    padding: 0 5vw;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 로고 */
+.logo-text {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--point-green);
+}
+
+.logo-text:hover {
+    color: var(--primary-text);
+}
+
+/* 메뉴 그룹 */
+.menu-group {
+    flex: 1;
+    margin-left: 40px;
+}
+
+.menu-group ul {
+    display: flex;
+    gap: 30px;
+}
+
+.menu-group ul li a {
+    font-size: 1.2rem;
+    color: var(--secondary-text);
+    position: relative;
+    padding: 5px 0;
+}
+
+.menu-group ul li a:hover {
+    color: var(--point-green);
+}
+
+.menu-group ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: 0;
+    left: 50%;
+    background-color: var(--point-green);
+    transition: 0.3s;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.menu-group ul li a:hover::after {
+    width: 100%;
+}
+
+/* 오른쪽 그룹 (검색, 로그인) */
+.right-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar input {
+    padding: 10px 15px 10px 35px;
+    border: 1px solid var(--line-color);
+    border-radius: 20px;
+    background-color: var(--white);
+    outline: none;
+    width: 150px;
+}
+
+.search-bar input:focus {
+    border-color: var(--point-green);
+    width: 200px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.login-group {
+    display: flex;
+    gap: 15px;
+}
+
+.login-group li a {
+    font-size: 1.1rem;
+    color: var(--secondary-text);
+    font-weight: normal;
+}
+
+.login-group li a:hover {
+    color: var(--point-green);
+}
+
+
+/* =======================================================
+   2. 소개 페이지 전용 스타일 (카드 디자인 적용)
+   ======================================================= */
+.section-content { 
+    max-width: 700px;
+    width: 90%;
+    margin: 60px auto 60px auto;
+    padding: 60px 40px;
+    
+    /* 카드 스타일 적용 */
+    background-color: var(--white);
+    border-radius: 30px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(0,0,0,0.02);
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: fadeInUp 0.8s ease-out; /* 등장 애니메이션 */
+}
+
+.section-title {
+    font-size: 2.2rem;
+    color: var(--primary-text);
+    margin-bottom: 30px;
+    word-break: keep-all;
+}
+
+.intro-image {
+    max-width: 100%; 
+    width: 350px; 
+    height: auto; 
+    margin: 0 auto 30px auto; 
+    border-radius: 20px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.intro-image:hover {
+    transform: translateY(-5px); /* 이미지 호버 시 살짝 뜸 */
+}
+
+.intro-description {
+    font-size: 1.15rem;
+    margin-bottom: 50px;
+    color: var(--primary-text);
+    line-height: 1.8;
+    word-break: keep-all;
+}
+
+/* '테스트 시작' 버튼 (start-button) */
+.start-button {
+    display: inline-block;
+    padding: 18px 60px;
+    background-color: var(--point-green); 
+    color: var(--white);
+    border-radius: 50px;
+    font-size: 1.3em;
+    font-weight: normal;
+    box-shadow: 0 10px 20px rgba(143, 159, 133, 0.3); 
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.start-button:hover {
+    background-color: var(--primary-text); /* 호버 시 짙은 갈색으로 */
+    transform: translateY(-3px); 
+    box-shadow: 0 15px 25px rgba(74, 59, 50, 0.2);
+}
+
+.start-button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(74, 59, 50, 0.2);
+}
+
+
+/* =======================================================
+   3. 푸터 스타일
+   ======================================================= */
+.footer {
+    background-color: #F5F0E6; 
+    padding: 40px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--secondary-text);
+    border-top: none;
+    margin-top: auto; /* 하단 고정 */
+}
+
+/* 등장 애니메이션 키프레임 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
