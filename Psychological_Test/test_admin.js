@@ -41,6 +41,7 @@ async function uploadTest() {
     const id = document.getElementById('current-test-id').value; // 수정 시 ID 존재
     const title = document.getElementById('test_title').value;
     const desc = document.getElementById('test_desc').value;
+    const category = document.getElementById('test_category').value;
     const file = document.getElementById('test_thumb').files[0];
 
     if (!title) return alert("제목을 입력해주세요.");
@@ -48,6 +49,8 @@ async function uploadTest() {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', desc);
+    formData.append('category', category);
+
     if(file) formData.append('thumbnail', file);
 
     let url = 'http://localhost:3000/api/tests';
@@ -107,6 +110,9 @@ async function editTest(id) {
     document.getElementById('current-test-id').value = info.id;
     document.getElementById('test_title').value = info.title;
     document.getElementById('test_desc').value = info.description;
+
+    // [NEW] 기존 카테고리 값 선택 (없으면 기본값 '성격')
+    document.getElementById('test_category').value = info.category || '성격';
     
     // UI 변경 (등록 모드 -> 수정 모드)
     document.getElementById('test-form-title').innerText = "Edit Test";
@@ -130,6 +136,7 @@ async function editTest(id) {
  */
 function resetTestForm() {
     document.getElementById('testForm').reset();
+    document.getElementById('test_category').value = '성격';
     document.getElementById('current-test-id').value = '';
     document.getElementById('test-form-title').innerText = "Upload Test";
     

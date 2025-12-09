@@ -22,10 +22,10 @@
 
             <div class="menu-group">
                 <ul>
-                    <li><a href="#">연애</a></li>
-                    <li><a href="#">사회생활</a></li>
-                    <li><a href="#">성격</a></li>
-                    <li><a href="#fortune">운세</a></li>
+                    <li><a href="#" onclick="fetchAndRenderTests('연애'); return false;">연애</a></li>
+                    <li><a href="#" onclick="fetchAndRenderTests('성격'); return false;">성격</a></li>
+                    <li><a href="#" onclick="fetchAndRenderTests('AI'); return false;">AI</a></li>
+                    <li><a href="#fortune" onclick="location.reload()">운세</a></li> 
                 </ul>
             </div>
 
@@ -35,16 +35,35 @@
                     <i class="fas fa-search search-icon"></i>
                 </div>
                 <ul class="login-group">
-                    <li><a href="#">로그인</a></li>
+                    <li><a href="login.html">로그인</a></li>
                     /
-                    <li><a href="#">회원가입</a></li>
+                    <li><a href="signup.html">회원가입</a></li>
                 </ul>
             </div>
         </nav>
     </header>
 
+    <section class="hero-box">
+        <div class="hero-content">
+            <div class="hero-text">
+                <span class="hero-badge">✨ 추천 테스트</span>
+                <h1>나를 찾아 떠나는<br>여행, 오늘의 심리테스트</h1>
+                <p>당신의 무의식을 확인해보세요!<br>재미있고 신비로운 테스트가 기다리고 있어요 ✨</p>
+                <a href="#" class="hero-btn">지금 시작하기 <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="hero-img-container">
+                <div class="yellow-box">
+                    <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Main Visual">
+                </div>
+            </div>
+        </div>
+    </section>
     <section class="highlight-tests-carousel">
-        <h2 class="section-title" style="margin-bottom: 80px;">추천 콘텐츠</h2>
+        <div class="section-header">
+            <h2 class="section-title">인기 콘텐츠</h2>
+            <p class="section-subtitle">지금 가장 인기있는 테스트를 만나보세요!</p>
+        </div>
         <div class="carousel-window"> 
             <div class="highlight-track"></div>
         </div>

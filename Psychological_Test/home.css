@@ -1,11 +1,10 @@
 @charset "UTF-8";
+
 /* =======================================================
    0. 폰트 및 전역 변수 설정
    ======================================================= */
-/* 폰트 불러오기 */
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap');
 
-/* [변수 설정] */
 :root {
     --bg-color: #FDFBF7;        /* 배경: 크림색 */
     --white: #FFFFFF;           /* 카드 배경: 흰색 */
@@ -13,18 +12,15 @@
     --secondary-text: #8D8276;  /* 서브 텍스트: 연한 갈색 */
     --point-green: #8F9F85;     /* 포인트: 녹색 */
     --line-color: #EBE5CE;      /* 라인 색상 */
-    --shadow-soft: 0 10px 30px rgba(166, 144, 118, 0.1); /* 그림자 */
+    --shadow-soft: 0 10px 30px rgba(166, 144, 118, 0.1); 
+    --yellow-point: #FFD500;    /* 히어로 섹션 노란색 포인트 */
 }
 
 
 /* =======================================================
    1. 기본 리셋 및 공통 스타일
    ======================================================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: 'Gowun Dodum', sans-serif;
@@ -32,225 +28,170 @@ body {
     color: var(--primary-text);
     line-height: 1.6;
     overflow-x: hidden;
+    
+    /* 피그마 느낌의 은은한 격자 배경 */
+    background-image: 
+        linear-gradient(rgba(200, 200, 200, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200, 200, 200, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
 }
 
-h1, h2, h3, 
-.logo-text, 
-.menu-group a, 
-.fortune-btn, 
-.login-group a {
+h1, h2, h3, .logo-text, .menu-group a, .fortune-btn, .login-group a, .hero-btn {
     font-family: 'Jua', sans-serif;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-    transition: 0.3s;
-}
-
-ul {
-    list-style: none;
-}
-
-img {
-    display: block;
-    max-width: 100%;
-}
+a { text-decoration: none; color: inherit; transition: 0.3s; }
+ul { list-style: none; }
+img { display: block; max-width: 100%; }
 
 
 /* =======================================================
    2. 헤더 (Header)
    ======================================================= */
 header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    position: sticky; top: 0; z-index: 1000;
     background-color: rgba(253, 251, 247, 0.95);
     backdrop-filter: blur(5px);
     transition: transform 0.3s ease-in-out;
 }
-
-header.hide {
-    transform: translateY(-100%);
-}
+header.hide { transform: translateY(-100%); }
 
 .Top_bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 90px;
-    padding: 0 5vw;
-    max-width: 1200px;
-    margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    height: 90px; padding: 0 5vw; max-width: 1200px; margin: 0 auto;
 }
 
-/* 로고 */
-.logo-text {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: var(--point-green);
-}
+.logo-text { font-size: 1.8rem; font-weight: bold; color: var(--point-green); }
+.logo-text:hover { color: var(--primary-text); }
 
-.logo-text:hover {
-    color: var(--primary-text);
-}
-
-/* 메뉴 그룹 */
-.menu-group {
-    flex: 1;
-    margin-left: 40px;
-}
-
-.menu-group ul {
-    display: flex;
-    gap: 30px;
-}
-
-.menu-group ul li a {
-    font-size: 1.2rem;
-    color: var(--secondary-text);
-    position: relative;
-    padding: 5px 0;
-}
-
-.menu-group ul li a:hover {
-    color: var(--point-green);
-}
-
+.menu-group { flex: 1; margin-left: 40px; }
+.menu-group ul { display: flex; gap: 30px; }
+.menu-group ul li a { font-size: 1.2rem; color: var(--secondary-text); position: relative; padding: 5px 0; }
+.menu-group ul li a:hover { color: var(--point-green); }
 .menu-group ul li a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 3px;
-    bottom: 0;
-    left: 50%;
-    background-color: var(--point-green);
-    transition: 0.3s;
-    transform: translateX(-50%);
-    border-radius: 2px;
+    content: ''; position: absolute; width: 0; height: 3px; bottom: 0; left: 50%;
+    background-color: var(--point-green); transition: 0.3s; transform: translateX(-50%); border-radius: 2px;
 }
+.menu-group ul li a:hover::after { width: 100%; }
 
-.menu-group ul li a:hover::after {
-    width: 100%;
-}
-
-/* 오른쪽 그룹 (검색, 로그인) */
-.right-group {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.search-bar {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
+.right-group { display: flex; align-items: center; gap: 20px; }
+.search-bar { position: relative; display: flex; align-items: center; }
 .search-bar input {
-    padding: 10px 15px 10px 35px;
-    border: 1px solid var(--line-color);
-    border-radius: 20px;
-    background-color: var(--white);
-    outline: none;
-    width: 150px;
+    padding: 10px 15px 10px 35px; border: 1px solid var(--line-color);
+    border-radius: 20px; background-color: var(--white); outline: none; width: 150px;
 }
+.search-bar input:focus { border-color: var(--point-green); width: 200px; }
+.search-icon { position: absolute; left: 12px; color: #ccc; font-size: 0.9rem; }
 
-.search-bar input:focus {
-    border-color: var(--point-green);
-    width: 200px;
-}
+.login-group { display: flex; gap: 15px; }
+.login-group li a { font-size: 1.1rem; color: var(--secondary-text); font-weight: normal; }
+.login-group li a:hover { color: var(--point-green); }
 
-.search-icon {
-    position: absolute;
-    left: 12px;
-    color: #ccc;
-    font-size: 0.9rem;
-}
-
-.login-group {
-    display: flex;
-    gap: 15px;
-}
-
-.login-group li a {
-    font-size: 1.1rem;
-    color: var(--secondary-text);
-    font-weight: normal;
-}
-
-.login-group li a:hover {
-    color: var(--point-green);
-}
-
-/* 3. 메인 슬라이드 (추천 콘텐츠) */
-.highlight-tests-carousel {
-    width: 100%;
-    max-width: 1000px;
-    margin: 30px auto;
-    padding: 0 20px;
-}
-
-.highlight-track {
-    display: flex;
-    gap: 20px;
-    justify-content: center; /* 중앙 정렬 */
-    flex-wrap: wrap; /* 화면 좁아지면 줄바꿈 */
-    width: 100%; /* 트랙 너비 100% */
-}
-
-.highlight-slide {
-    flex-shrink: 0; 
-    width: 300px; 
-    height: 350px; 
-    border-radius: 20px;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.highlight-slide:hover {
-    transform: translateY(-10px);
-}
-
-.highlight-slide:active {
-    transform: scale(0.98);
-    box-shadow: 0 5px 10px rgba(143, 159, 133, 0.2);
-}
 
 /* =======================================================
-   4. 오늘의 운세
+   3. 히어로 섹션 (Hero Section)
    ======================================================= */
-.today-fortune {
-    padding: 40px 10px;
-    text-align: center;
-    background-color: #fff;
+.hero-box {
+    max-width: 1100px; margin: 50px auto; padding: 0 20px;
+}
+.hero-content {
+    display: flex; justify-content: space-between; align-items: center; gap: 40px;
 }
 
+/* 왼쪽 텍스트 */
+.hero-text { flex: 1; }
+.hero-badge {
+    display: inline-block; background: #E8F0E6; color: var(--point-green);
+    padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; font-weight: bold;
+}
+.hero-text h1 {
+    font-size: 3rem; line-height: 1.2; color: var(--primary-text); margin-bottom: 20px;
+}
+.hero-text p {
+    color: var(--secondary-text); font-size: 1.1rem; margin-bottom: 30px;
+}
+.hero-btn {
+    display: inline-block; background-color: var(--point-green); color: white;
+    padding: 15px 40px; border-radius: 50px; font-size: 1.2rem; 
+    box-shadow: 0 10px 20px rgba(143, 159, 133, 0.4);
+}
+.hero-btn:hover { background-color: var(--primary-text); transform: scale(1.05); }
+
+/* 오른쪽 이미지 (노란 박스) */
+.hero-img-container { flex: 1; display: flex; justify-content: flex-end; }
+.yellow-box {
+    width: 400px; height: 400px;
+    background-color: var(--yellow-point); /* 노란색 배경 */
+    border-radius: 40px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 20px 20px 0px rgba(0,0,0,0.03);
+    overflow: hidden;
+}
+.yellow-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+
+
+/* =======================================================
+   4. 추천 콘텐츠 (Highlight Tests)
+   ======================================================= */
+.highlight-tests-carousel { 
+    width: 100%; max-width: 1100px; margin: 30px auto; padding: 0 20px; text-align: center; 
+}
+.section-header { margin-bottom: 40px; }
+
+/* 제목 양옆 별 장식 */
+.section-title::before { content: '★'; color: var(--point-green); margin-right: 10px; }
+.section-title::after { content: '★'; color: var(--point-green); margin-left: 10px; }
+.section-subtitle { color: var(--secondary-text); margin-top: 2px; font-size: 1rem; }
+
+.highlight-track { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; width: 100%; }
+
+/* 카드 디자인 */
+.highlight-slide {
+    width: 320px; 
+    background: var(--white);
+    border-radius: 24px; 
+    box-shadow: var(--shadow-soft);
+    overflow: hidden; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none; display: block; text-align: left; 
+}
+.highlight-slide:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(166, 144, 118, 0.25); }
+
+/* 카드 썸네일 영역 */
+.highlight-thumb {
+    height: 220px; background-size: cover; background-position: center; position: relative;
+}
+/* 우측 상단 카테고리 태그 */
+.category-tag {
+    position: absolute; top: 15px; right: 15px;
+    background: rgba(255, 255, 255, 0.9); color: var(--point-green);
+    padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; font-weight: bold; font-family: 'Jua', sans-serif;
+}
+
+/* 카드 텍스트 영역 */
+.highlight-info { padding: 20px 20px 15px 20px; }
+.highlight-title {
+    font-size: 1.25rem; color: var(--primary-text); font-weight: bold; margin-bottom: 15px; line-height: 1.4;
+}
+
+/* 하단 인기 급상승 태그 */
+.trending-tag {
+    display: flex; align-items: center; gap: 5px;
+    color: var(--point-green); font-size: 0.9rem;
+}
+.trending-icon { color: var(--point-green); }
+
+
+/* =======================================================
+   5. 오늘의 운세 (Today Fortune)
+   ======================================================= */
+.today-fortune { padding: 40px 10px; text-align: center; margin: 80px 0; }
 .fortune-container {
-    max-width: 500px;
-    margin: 0 auto;
-    background-color: var(--bg-color);
-    border-radius: 30px;
-    padding: 20px;
-    border: 2px dashed var(--line-color);
+    max-width: 500px; margin: 0 auto; background-color: var(--bg-color);
+    border-radius: 30px; padding: 20px; border: 2px dashed var(--line-color);
 }
-
-.today-fortune h2 {
-    font-size: 2.2rem;
-    margin-bottom: 10px;
-    color: var(--primary-text);
-}
-
-.today-fortune p {
-    color: var(--secondary-text);
-    margin-bottom: 30px;
-}
-
-.fortune-cookie-icon {
-    font-size: 4rem;
-    margin: 20px 0;
-    animation: bounce 2s infinite;
-}
+.today-fortune h2 { font-size: 2.2rem; margin-bottom: 10px; color: var(--primary-text); }
+.today-fortune p { color: var(--secondary-text); margin-bottom: 30px; }
+.fortune-cookie-icon { font-size: 4rem; margin: 20px 0; animation: bounce 2s infinite; }
 
 @keyframes bounce {
     0%, 100% { transform: translateY(0); }
@@ -258,154 +199,234 @@ header.hide {
 }
 
 .fortune-btn {
-    background-color: var(--point-green);
-    color: white;
-    border: none;
-    padding: 12px 35px;
-    border-radius: 50px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(143, 159, 133, 0.4);
-    transition: 0.3s;
+    background-color: var(--point-green); color: white; border: none;
+    padding: 12px 35px; border-radius: 50px; font-size: 1.2rem; cursor: pointer;
+    box-shadow: 0 5px 15px rgba(143, 159, 133, 0.4); transition: 0.3s;
 }
+.fortune-btn:hover { background-color: var(--primary-text); transform: scale(1.05); }
 
-.fortune-btn:hover {
-    background-color: var(--primary-text);
-    transform: scale(1.05);
+/* 포춘쿠키 결과창 */
+.fortune-paper {
+    background-color: #fffbe6; border: 2px dashed #d4a373; padding: 30px 10px;
+    border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 90%; max-width: 500px;
+    margin: 0 auto; opacity: 0; transform: scale(0.8); transition: all 0.5s ease-out;
+    display: flex; align-items: center; justify-content: center; min-height: 100px;
 }
+.fortune-paper.reveal { opacity: 1; transform: scale(1); }
+.paper-text { font-size: 1.1rem; line-height: 1.3; color: #5d4037; font-weight: bold; word-break: keep-all; width: 100%; }
+.fortune-btn:disabled { background-color: #ccc; cursor: default; transform: none !important; }
 
 
 /* =======================================================
-   5. 전체 심리테스트
+   6. 전체 심리테스트 (All Tests)
    ======================================================= */
-.all-tests {
-    padding: 60px 20px 100px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
+.all-tests { padding: 0 20px 100px; max-width: 1100px; margin: 0 auto; }
+.section-title { text-align: center; font-size: 2rem; margin-bottom: 50px; color: var(--primary-text); }
+.test-grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
 
-.section-title {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 40px;
-    color: var(--primary-text);
-}
-
-.test-grid-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-}
-
+/* 카드 아이템 */
 .test-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    background-color: var(--white); 
+    border-radius: 20px;            
+    box-shadow: var(--shadow-soft); 
+    overflow: hidden;
     cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex; flex-direction: column; 
+    padding-bottom: 20px;
 }
+.test-item:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(74, 59, 50, 0.15); }
 
 .thumb {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    border-radius: 15px;
-    background-color: #eee;
-    background-size: cover;
-    background-position: center;
-    margin-bottom: 15px;
-    box-shadow: var(--shadow-soft);
-    transition: transform 0.3s, box-shadow 0.3s;
-    position: relative;
-    overflow: hidden;
-}
-
-.test-item:hover .thumb {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(74, 59, 50, 0.15);
+    width: 100%; aspect-ratio: 16 / 9;
+    background-color: #eee; background-size: cover; background-position: center;
+    border-radius: 0; 
+    margin-bottom: 20px;
+    box-shadow: none;
 }
 
 .test-title {
-    font-size: 1.2rem;
-    color: var(--primary-text);
-    margin: 0;
-    transition: color 0.3s;
+    font-size: 1.15rem; color: var(--primary-text); margin: 0 20px; 
+    text-align: left; font-weight: bold;
 }
-
-.test-item:hover .test-title {
-    color: var(--point-green);
-}
+.test-item:hover .test-title { color: var(--point-green); }
 
 
 /* =======================================================
-   6. 푸터 (Footer)
+   7. 푸터 (Footer)
    ======================================================= */
-.footer {
-    background-color: #F5F0E6;
-    padding: 40px;
-    text-align: center;
-    font-size: 0.9rem;
-    color: var(--secondary-text);
+.footer { 
+    background-color: #F5F0E6; 
+    padding: 40px; 
+    text-align: center; 
+    font-size: 0.9rem; 
+    color: var(--secondary-text); 
 }
 
 /* =======================================================
-   오늘의 운세 애니메이션 및 디자인
+   8. 로그인 & 회원가입 페이지 전용 스타일
    ======================================================= */
-
-/* 1. 쿠키 흔들리는 애니메이션 정의 */
-@keyframes cookieShake {
-    0% { transform: rotate(0deg); }
-    25% { transform: rotate(-15deg); }
-    50% { transform: rotate(15deg); }
-    75% { transform: rotate(-10deg); }
-    100% { transform: rotate(0deg); }
-}
-
-/* 자바스크립트가 이 클래스를 붙이면 흔들림 */
-.fortune-cookie-icon.shaking .cookie-face {
-    animation: cookieShake 0.5s ease-in-out;
-}
-
-/* 2. 운세 결과 종이 디자인 */
-.fortune-paper {
-    background-color: #fffbe6; /* 연한 노란색 종이 느낌 */
-    border: 2px dashed #d4a373; /* 점선 테두리 */
-    padding: 30px 10px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 90%;
-    max-width: 500px;
-    margin: 0 auto; /* 중앙 정렬 */
-    
-    /* 처음에 숨겼다가 나타나는 효과 */
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.5s ease-out;
-
-    /* 텍스트 수직 정렬을 위해 flex 사용 */
+   .auth-main {
+    min-height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100px; /* 최소 높이 설정 */
+    padding: 40px 20px;
 }
 
-/* 자바스크립트가 이 클래스를 붙이면 나타남 */
-.fortune-paper.reveal {
-    opacity: 1;
-    transform: scale(1);
+.auth-card {
+    background: var(--white);
+    width: 100%;
+    max-width: 480px;
+    padding: 50px 40px;
+    border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(166, 144, 118, 0.15); /* 부드러운 그림자 */
+    text-align: center;
+    position: relative;
 }
 
-.paper-text {
-    font-size: 1.1rem;     
-    line-height: 1.3;      
-    color: #5d4037;
+/* 상단 이모지 아이콘 */
+.auth-icon-top {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    animation: bounce 2s infinite;
+}
+
+.auth-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-family: 'Jua', sans-serif;
+}
+
+.auth-subtitle {
+    font-size: 0.95rem;
+    color: #999;
+    margin-bottom: 40px;
+}
+
+/* 입력 폼 스타일 */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-label {
+    display: block;
+    font-size: 0.9rem;
     font-weight: bold;
-    word-break: keep-all;   
-    width: 100%;            
+    color: #3D332B;
+    margin-bottom: 8px;
+    margin-left: 5px;
 }
 
-/* 버튼 비활성화 상태 디자인 */
-.fortune-btn:disabled {
-    background-color: #ccc;
-    cursor: default;
-    transform: none !important; /* 클릭 효과 제거 */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 15px 15px 15px 45px; /* 아이콘 공간 확보 */
+    border: 1px solid #EBE5CE;
+    border-radius: 12px;
+    font-size: 1rem;
+    color: #555;
+    outline: none;
+    background-color: #FAFAFA;
+    transition: 0.3s;
+    font-family: 'Gowun Dodum', sans-serif;
+}
+
+.input-wrapper input:focus {
+    border-color: var(--point-green);
+    background-color: #fff;
+}
+
+/* 입력창 내부 아이콘 */
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: #AAA;
+    font-size: 1.1rem;
+}
+
+/* 비밀번호 보기 눈 아이콘 */
+.eye-icon {
+    position: absolute;
+    right: 15px;
+    color: #AAA;
+    cursor: pointer;
+}
+
+/* 버튼 스타일 */
+.auth-btn {
+    width: 100%;
+    padding: 16px;
+    background-color: #7A8A70; /* 사진 속 쑥색 */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    font-family: 'Jua', sans-serif;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 5px 15px rgba(122, 138, 112, 0.3);
+    transition: 0.3s;
+}
+
+.auth-btn:hover {
+    background-color: #5F6F55;
+    transform: translateY(-2px);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    color: #CCC;
+    font-size: 0.85rem;
+    margin: 30px 0;
+}
+
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #EBE5CE;
+}
+
+.divider::before { margin-right: 15px; }
+.divider::after { margin-left: 15px; }
+
+.bottom-text {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.bottom-text a {
+    color: #7A8A70;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-left: 5px;
+}
+
+/* =======================================================
+   9. 인증 페이지 피드백 스타일 
+   ======================================================= */
+
+/* 비밀번호 확인 성공 시 아이콘 색상 변경 */
+.input-wrapper.valid-match .input-icon {
+    color: var(--point-green, #8F9F85) !important; /* 초록색 체크 */
+}
+
+/* 비밀번호 입력창 아이콘 색상 기본 설정 */
+.input-icon, .eye-icon {
+    transition: color 0.3s;
+}
+
+/* 비밀번호 틀림 시 테두리 색상 (선택 사항) */
+.input-wrapper.invalid input {
+    border-color: #ff6b6b;
 }

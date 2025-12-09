@@ -8,9 +8,19 @@ const cors = require('cors');
 const path = require('path');
 const multer = require('multer'); // 파일 업로드 라이브러리
 const fs = require('fs');       // 파일 시스템 라이브러리
+const bcrypt = require('bcrypt'); // 암호화
+const session = require('express-session'); // 세션
 
 const app = express();
 const PORT = 3000;
+
+// 세션 미들웨어 설정 
+app.use(session({
+    secret: 'my_secret_key', 
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // https 환경이면 true
+}));
 
 app.use(cors());
 app.use(express.json());
@@ -83,6 +93,64 @@ const Visitor = mongoose.model('Visitor', visitorSchema);
    [5] API 라우트 정의
 ========================================================= */
 
+// --- 5-0. 회원 관리 API (로그인/회원가입/로그아웃) ---
+
+// 1. 회원가입
+app.post('/api/register', async (req, res) => {
+    const { user_id, password, nickname } = req.body;
+    if (!user_id || !password || !nickname) return res.status(400).json({ message: '모든 항목을 입력해주세요.' });
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10); // 비밀번호 암호화
+        const sql = 'INSERT INTO users (user_id, password, nickname) VALUES (?, ?, ?)';
+        db.query(sql, [user_id, hashedPassword, nickname], (err, result) => {
+            if (err) {
+                if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ message: '이미 존재하는 아이디입니다.' });
+                return res.status(500).json({ message: '서버 에러' });
+            }
+            res.json({ message: '회원가입 성공!' });
+        });
+    } catch (error) { res.status(500).json({ message: '암호화 오류' }); }
+});
+
+// 2. 로그인
+app.post('/api/login', (req, res) => {
+    const { user_id, password } = req.body;
+    const sql = 'SELECT * FROM users WHERE user_id = ?';
+    db.query(sql, [user_id], async (err, results) => {
+        if (err) return res.status(500).json({ message: '서버 에러' });
+        if (results.length === 0) return res.status(401).json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' });
+
+        const user = results[0];
+        const match = await bcrypt.compare(password, user.password); // 비밀번호 확인
+        
+        if (match) {
+            req.session.user = { id: user.id, user_id: user.user_id, nickname: user.nickname }; // 세션 저장
+            req.session.save(() => { res.json({ message: '로그인 성공', user: req.session.user }); });
+        } else {
+            res.status(401).json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' });
+        }
+    });
+});
+
+// 3. 로그아웃
+app.post('/api/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) return res.status(500).send('로그아웃 실패');
+        res.clearCookie('connect.sid'); 
+        res.json({ message: '로그아웃 성공' });
+    });
+});
+
+// 4. 로그인 상태 확인 (새로고침 시 유지용)
+app.get('/api/auth/status', (req, res) => {
+    if (req.session.user) {
+        res.json({ loggedIn: true, user: req.session.user });
+    } else {
+        res.json({ loggedIn: false });
+    }
+});
+
 // --- 5-1. MongoDB API (방문자 카운터) ---
 app.get('/api/visit', async (req, res) => {
     try {
@@ -101,6 +169,22 @@ app.get('/api/visit', async (req, res) => {
         console.error("방문자 카운트 에러:", err);
         res.status(500).json({ total: 0, today: 0 });
     }
+});
+
+// 특정 테스트 조회수(방문수) 증가 API
+app.post('/api/tests/:id/visit', (req, res) => {
+    const { id } = req.params;
+    
+    // DB에서 해당 id의 visit_count를 1 더함
+    const sql = 'UPDATE tests SET visit_count = visit_count + 1 WHERE id = ?';
+    
+    db.query(sql, [id], (err, result) => {
+        if (err) {
+            console.error("조회수 증가 실패:", err);
+            return res.status(500).send(err);
+        }
+        res.json({ message: 'Visit count incremented' });
+    });
 });
 
 
@@ -184,10 +268,11 @@ app.get('/api/tests/search', (req, res) => {
     const { q } = req.query;
     if (!q) return res.json([]);
 
-    const sql = `SELECT * FROM tests WHERE title LIKE ? OR description LIKE ? ORDER BY id DESC`;
+    const sql = `SELECT * FROM tests WHERE title LIKE ? OR description LIKE ? OR category LIKE ? ORDER BY id DESC`;
     const searchTerm = `%${q}%`;
     
-    db.query(sql, [searchTerm, searchTerm], (err, results) => {
+    // 파라미터 3개 전달 (title, description, category)
+    db.query(sql, [searchTerm, searchTerm, searchTerm], (err, results) => {
         if (err) {
             console.error("검색 오류:", err);
             return res.status(500).send(err);
@@ -196,10 +281,10 @@ app.get('/api/tests/search', (req, res) => {
     });
 });
 
-// 3. 최신 등록 테스트 3개 가져오기 (Best 3 표시용)
+// 3. 인기 테스트 3개 가져오기 (Best 3 표시용) 
 app.get('/api/tests/recent', (req, res) => {
-    // DB에 등록된 ID를 기준으로 최신순으로 정렬
-    const sql = 'SELECT id, title, thumbnail FROM tests ORDER BY id DESC LIMIT 3'; 
+    // visit_count(조회수)가 높은 순서대로 3개, 조회수가 같으면 최신순
+    const sql = 'SELECT id, title, thumbnail, category, visit_count FROM tests ORDER BY visit_count DESC, id DESC LIMIT 3'; 
     db.query(sql, (err, results) => {
         if (err) return res.status(500).send(err);
         res.json(results);
@@ -231,30 +316,44 @@ app.get('/api/tests/:id', (req, res) => {
     });
 });
 
-// 5. 심리테스트 등록
+
+// 5. 심리테스트 등록 
 app.post('/api/tests', upload.single('thumbnail'), (req, res) => {
-    const { title, description } = req.body;
+
+    const { title, description, category } = req.body;
     const thumbnail = req.file ? `/uploads/${req.file.filename}` : null;
 
-    const sql = 'INSERT INTO tests (title, description, thumbnail) VALUES (?, ?, ?)';
-    db.query(sql, [title, description, thumbnail], (err, result) => {
+    const sql = 'INSERT INTO tests (title, description, thumbnail, category) VALUES (?, ?, ?, ?)';
+    
+    // category가 없으면 기본값 '성격'으로 저장
+    const categoryValue = category || '성격';
+
+    db.query(sql, [title, description, thumbnail, categoryValue], (err, result) => {
         if (err) return res.status(500).send(err);
         res.json({ message: 'Test Created', id: result.insertId });
     });
 });
 
-// 6. 심리테스트 수정
+// 6. 심리테스트 수정 
 app.put('/api/tests/:id', upload.single('thumbnail'), (req, res) => {
-    const { title, description } = req.body;
+    // [핵심 수정] req.body에서 category를 받도록 추가
+    const { title, description, category } = req.body; 
     const { id } = req.params;
     
-    let sql = 'UPDATE tests SET title=?, description=? WHERE id=?';
-    let params = [title, description, id];
+    const categoryValue = category || '성격';
+
+    let sql = '';
+    let params = [];
 
     if (req.file) {
+        // 이미지가 바뀐 경우
         const thumbnail = `/uploads/${req.file.filename}`;
-        sql = 'UPDATE tests SET title=?, description=?, thumbnail=? WHERE id=?';
-        params = [title, description, thumbnail, id];
+        sql = `UPDATE tests SET title=?, description=?, thumbnail=?, category=? WHERE id=?`;
+        params = [title, description, thumbnail, categoryValue, id];
+    } else {
+        // 이미지는 그대로 두는 경우
+        sql = `UPDATE tests SET title=?, description=?, category=? WHERE id=?`;
+        params = [title, description, categoryValue, id]; 
     }
 
     db.query(sql, params, (err, result) => {

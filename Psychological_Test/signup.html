@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>회원가입 - 심리테스트</title>
+        <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" href="home.css">
+    
+        <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    </head>
+    
+    <body>
+        <header>  
+            <nav class="Top_bar">
+                <a class="icon_link" href="home.html">
+                    <span class="logo-text">TestTalk</span>
+                </a>
+    
+                <div class="menu-group">
+                    <ul>
+                        <li><a href="#" onclick="fetchAndRenderTests('연애'); return false;">연애</a></li>
+                        <li><a href="#" onclick="fetchAndRenderTests('성격'); return false;">성격</a></li>
+                        <li><a href="#" onclick="fetchAndRenderTests('AI'); return false;">AI</a></li>
+                        <li><a href="#fortune" onclick="location.reload()">운세</a></li> 
+                    </ul>
+                </div>
+    
+                <div class="right-group">
+                    <div class="search-bar">
+                        <input type="text" placeholder="테스트 검색...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                    <ul class="login-group">
+                        <li><a href="login.html">로그인</a></li>
+                    /
+                    <li><a href="signup.html">회원가입</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+<body>
+
+    <main class="auth-main">
+        <div class="auth-card">
+            <div class="auth-icon-top">🎁</div>
+            <h1 class="auth-title">새로운 시작을 함께해요!</h1>
+            <p class="auth-subtitle">회원가입하고 특별한 심리테스트를 경험하세요</p>
+    
+            <form onsubmit="event.preventDefault(); handleSignup();">
+                
+                <div class="input-group">
+                    <label class="input-label">아이디</label>
+                    <div class="input-wrapper">
+                        <i class="far fa-user input-icon"></i>
+                        <input type="text" id="signId" placeholder="사용하실 아이디를 입력해주세요" required>
+                    </div>
+                </div>
+    
+                <div class="input-group">
+                    <label class="input-label">닉네임</label>
+                    <div class="input-wrapper">
+                        <i class="far fa-smile input-icon"></i>
+                        <input type="text" id="signNick" placeholder="사용하실 닉네임을 입력해주세요" required>
+                    </div>
+                </div>
+    
+                <div class="input-group">
+                    <label class="input-label">비밀번호</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="signPw" placeholder="8자 이상 입력해주세요" oninput="validatePasswords()" required>
+                        <i class="far fa-eye eye-icon" onclick="togglePasswordVisibility('signPw', this)"></i>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">비밀번호 확인</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-check-circle input-icon"></i>
+                        <input type="password" id="signPwConfirm" placeholder="비밀번호를 다시 입력해주세요" oninput="validatePasswords()" required>
+                        <i class="far fa-eye eye-icon" onclick="togglePasswordVisibility('signPwConfirm', this)"></i>
+                    </div>
+                </div>
+    
+                <button type="submit" class="auth-btn">가입완료</button>
+            </form>
+    
+            <div class="divider">또는</div>
+    
+            <p class="bottom-text">
+                이미 계정이 있으신가요? <a href="login.html">로그인</a>
+            </p>
+        </div>
+    </main>
+
+    <div style="text-align: center; color: #999; font-size: 0.85rem; margin-bottom: 40px;">
+        🎉 환영합니다! 함께 즐거운 테스트를 시작해요
+    </div>
+
+    <footer class="footer">
+        <p>e-mail: 2301491@kunsan.ac.kr</p>
+    </footer>
+
+    <script src="auth.js"></script> 
+</body>
+</html>

@@ -17,10 +17,10 @@
             </a>
             <div class="menu-group">
                 <ul>
-                    <li><a href="#">연애</a></li>
-                    <li><a href="#">사회생활</a></li>
-                    <li><a href="#">성격</a></li>
-                    <li><a href="home.html#fortune">운세</a></li>
+                    <li><a href="#" onclick="fetchAndRenderTests('연애'); return false;">연애</a></li>
+                    <li><a href="#" onclick="fetchAndRenderTests('성격'); return false;">성격</a></li>
+                    <li><a href="#" onclick="fetchAndRenderTests('AI'); return false;">AI</a></li>
+                    <li><a href="#fortune" onclick="location.reload()">운세</a></li> 
                 </ul>
             </div>
             <div class="right-group">
@@ -29,9 +29,9 @@
                     <i class="fas fa-search search-icon"></i>
                 </div>
                 <ul class="login-group">
-                    <li><a href="#">로그인</a></li>
+                    <li><a href="login.html">로그인</a></li>
                     /
-                    <li><a href="#">회원가입</a></li>
+                    <li><a href="signup.html">회원가입</a></li>
                 </ul>
             </div>
         </nav>
