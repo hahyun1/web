@@ -3,7 +3,8 @@
  * 페이지 초기화 + 검색 이벤트 등록
  * ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
-    initScrollHeader();     
+    initScrollHeader();   
+    fetchAndRenderLatestTest();  
     fetchAndRenderTop3(); 
     fetchAndRenderTests();  // 초기에는 전체 목록을 로드 (query='')
     initFortuneCookie();
@@ -22,6 +23,66 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+/* ==========================================================================
+ * 1. 메인 배너 (Hero Section)에 최신 테스트 로드
+ * ========================================================================== */
+async function fetchAndRenderLatestTest() {
+    // ⚠️ 서버에서 최신 테스트를 가져오는 API 엔드포인트
+    const LATEST_API_URL = `${TEST_API_URL}/latest`; 
+    
+    // HTML 요소 선택
+    const heroContent = document.querySelector('.hero-content');
+    const heroTextDiv = heroContent ? heroContent.querySelector('.hero-text') : null;
+    const heroImgContainer = heroContent ? heroContent.querySelector('.hero-img-container') : null;
+
+    if (!heroTextDiv || !heroImgContainer) return;
+
+    try {
+        const response = await fetch(LATEST_API_URL);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        // 서버에서 최신 테스트 1개의 데이터 (JSON 객체)를 받음
+        const latestTest = await response.json(); 
+
+        if (!latestTest || !latestTest.id) {
+            console.warn("최신 테스트 데이터가 없습니다. 기본 배너를 유지합니다.");
+            return;
+        }
+        
+        // 데이터 추출 (description 필드가 서버에 있다고 가정)
+        const title = latestTest.title || '제목 없음';
+        const description = latestTest.description || '재미있고 신비로운 테스트가 기다리고 있어요 ✨';
+        
+        // hero_image가 있으면 사용하고, 없으면 thumbnail을 사용합니다.
+        const imageUrl = latestTest.thumbnail 
+            ? `${SERVER_URL}${latestTest.thumbnail}`
+            : '../Psychological_Test/img/default-image.png';
+
+        // 1. 텍스트 영역 업데이트 (hero-text)
+        heroTextDiv.querySelector('h1').innerHTML = title.replace(/\n/g, '<br>'); // 제목
+        heroTextDiv.querySelector('p').innerHTML = description.replace(/\n/g, '<br>'); // 설명
+        
+        // 버튼 URL 및 클릭 이벤트 업데이트
+        const heroBtn = heroTextDiv.querySelector('.hero-btn');
+        if (heroBtn) {
+            // 상세 페이지로 이동하도록 링크 설정
+            heroBtn.href = `test_detail.html?id=${latestTest.id}`;
+            // 조회수 증가 함수 연결
+            heroBtn.setAttribute('onclick', `countVisit(${latestTest.id})`);
+        }
+        
+        // 2. 이미지 영역 업데이트 (hero-img-container)
+        const imgElement = heroImgContainer.querySelector('img');
+        if (imgElement) {
+            imgElement.src = imageUrl;
+            imgElement.alt = title;
+        }
+
+    } catch (error) {
+        console.error("최신 테스트 로드 실패:", error);
+        // 실패 시 기본 HTML 콘텐츠가 유지됩니다.
+    }
+}
 
 /* ==========================================================================
  * 3. 전체 심리테스트 목록 (검색 시 화면 전환)
@@ -98,7 +159,7 @@ async function fetchAndRenderTests(query = '') {
 }
 
 /* ==========================================================================
- * 4. 최신 3개 고정 노출 (Best 3)
+ * 4. 인기 3개 고정 노출 (Best 3)
  * ========================================================================== */
 async function fetchAndRenderTop3() {
     const track = document.querySelector('.highlight-track');

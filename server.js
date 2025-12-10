@@ -300,6 +300,29 @@ app.get('/api/tests/recent', (req, res) => {
     });
 });
 
+
+// 3-1. 최신 테스트 1개 가져오기 (메인 배너 표시용)
+app.get('/api/tests/latest', (req, res) => {
+    // ⚠️ 테이블에 존재하는 컬럼(id, title, description, thumbnail)만 조회하도록 수정
+    // ⚠️ 정렬 기준을 created_at으로 변경하여 최신순 보장
+    const sql = 'SELECT id, title, description, thumbnail FROM tests ORDER BY created_at DESC LIMIT 1'; 
+    
+    db.query(sql, (err, results) => {
+        if (err) {
+            // 이제 이 에러는 DB 접속 문제 외에는 발생하지 않을 것입니다.
+            console.error("최신 테스트 로드 실패:", err);
+            return res.status(500).send({ message: "데이터베이스 오류" });
+        }
+        
+        if (results.length === 0) {
+            return res.json({});
+        }
+
+        // 단일 객체로 반환
+        res.json(results[0]);
+    });
+});
+
 // 4. 특정 심리테스트 상세 정보 & 질문 가져오기
 app.get('/api/tests/:id', (req, res) => {
     const { id } = req.params;
@@ -681,7 +704,6 @@ app.post('/api/tests/:id/like', (req, res) => {
         }
     });
 });
-
 
 
 /* =========================================================
