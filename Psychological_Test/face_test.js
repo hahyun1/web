@@ -73,7 +73,7 @@ async function predict() {
     console.log(prediction); // 디버깅용
     if(loadingMsg) loadingMsg.style.display = 'none';
 
-    // ★ [수정됨] 결과(Text)와 점수(Score)를 함께 서버로 전송
+    // 결과(Text)와 점수(Score)를 함께 서버로 전송
     await saveResultToServer(bestClass, bestScore);
 }
 
@@ -87,8 +87,7 @@ async function saveResultToServer(resultString, scoreVal) {
     // 1. 로그인 체크
     if (typeof checkAuthentication === 'function') {
         const user = await checkAuthentication();
-        // user가 null이면(비로그인) alert 없이 조용히 리턴하거나, 
-        // 필요하면 "로그인이 필요합니다" 알림을 띄울 수 있습니다.
+        
         if (!user) {
             console.log("비로그인 상태라 저장하지 않습니다.");
             return;

@@ -1,20 +1,17 @@
-
-/* ==========================================================================
- * 페이지 초기화 + 검색 이벤트 등록
- * ========================================================================== */
+/* =========================================================
+   [1] 페이지 초기설정 및 검색 이벤트 등록
+========================================================= */
 document.addEventListener('DOMContentLoaded', () => {
-    initScrollHeader();   
-    fetchAndRenderLatestTest();  
-    fetchAndRenderTop3(); 
-    fetchAndRenderTests();  // 초기에는 전체 목록을 로드 (query='')
-    initFortuneCookie();
-    checkLoginStatus();
+    initScrollHeader();         // 헤더 스크롤 제어
+    fetchAndRenderLatestTest(); // 메인 배너 로드
+    fetchAndRenderTop3();       // 인기 TOP 3 로드
+    fetchAndRenderTests();      // 전체 목록 로드
+    initFortuneCookie();        // 운세 기능 초기화
+    checkLoginStatus();         // 로그인 상태 확인
 
-    // 검색 입력창 요소 가져오기
     const searchInput = document.querySelector('.search-bar input');
 
-    // 키보드를 뗄 때마다 검색 함수 실행
-    // 검색창이 있을 때만 이벤트 연결 
+    // 실시간 검색 기능 (keyup 이벤트)
     if (searchInput) {
         searchInput.addEventListener('keyup', async (event) => {
             const query = event.target.value.trim();
@@ -23,14 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/* ==========================================================================
- * 1. 메인 배너 (Hero Section)에 최신 테스트 로드
- * ========================================================================== */
+/* =========================================================
+   [2] 메인 배너(Hero) 최신 테스트 데이터 렌더링
+========================================================= */
 async function fetchAndRenderLatestTest() {
-    // ⚠️ 서버에서 최신 테스트를 가져오는 API 엔드포인트
     const LATEST_API_URL = `${TEST_API_URL}/latest`; 
     
-    // HTML 요소 선택
     const heroContent = document.querySelector('.hero-content');
     const heroTextDiv = heroContent ? heroContent.querySelector('.hero-text') : null;
     const heroImgContainer = heroContent ? heroContent.querySelector('.hero-img-container') : null;
@@ -41,37 +36,30 @@ async function fetchAndRenderLatestTest() {
         const response = await fetch(LATEST_API_URL);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
-        // 서버에서 최신 테스트 1개의 데이터 (JSON 객체)를 받음
         const latestTest = await response.json(); 
 
         if (!latestTest || !latestTest.id) {
-            console.warn("최신 테스트 데이터가 없습니다. 기본 배너를 유지합니다.");
+            console.warn("최신 테스트 데이터가 없어 기본 배너를 유지합니다.");
             return;
         }
         
-        // 데이터 추출 (description 필드가 서버에 있다고 가정)
         const title = latestTest.title || '제목 없음';
         const description = latestTest.description || '재미있고 신비로운 테스트가 기다리고 있어요 ✨';
-        
-        // hero_image가 있으면 사용하고, 없으면 thumbnail을 사용합니다.
         const imageUrl = latestTest.thumbnail 
             ? `${SERVER_URL}${latestTest.thumbnail}`
             : '../Psychological_Test/img/default-image.png';
 
-        // 1. 텍스트 영역 업데이트 (hero-text)
-        heroTextDiv.querySelector('h1').innerHTML = title.replace(/\n/g, '<br>'); // 제목
-        heroTextDiv.querySelector('p').innerHTML = description.replace(/\n/g, '<br>'); // 설명
+        // 텍스트 및 버튼 정보 업데이트
+        heroTextDiv.querySelector('h1').innerHTML = title.replace(/\n/g, '<br>');
+        heroTextDiv.querySelector('p').innerHTML = description.replace(/\n/g, '<br>');
         
-        // 버튼 URL 및 클릭 이벤트 업데이트
         const heroBtn = heroTextDiv.querySelector('.hero-btn');
         if (heroBtn) {
-            // 상세 페이지로 이동하도록 링크 설정
             heroBtn.href = `test_detail.html?id=${latestTest.id}`;
-            // 조회수 증가 함수 연결
             heroBtn.setAttribute('onclick', `countVisit(${latestTest.id})`);
         }
         
-        // 2. 이미지 영역 업데이트 (hero-img-container)
+        // 이미지 업데이트
         const imgElement = heroImgContainer.querySelector('img');
         if (imgElement) {
             imgElement.src = imageUrl;
@@ -80,47 +68,40 @@ async function fetchAndRenderLatestTest() {
 
     } catch (error) {
         console.error("최신 테스트 로드 실패:", error);
-        // 실패 시 기본 HTML 콘텐츠가 유지됩니다.
     }
 }
 
-/* ==========================================================================
- * 3. 전체 심리테스트 목록 (검색 시 화면 전환)
- * ========================================================================== */
+/* =========================================================
+   [3] 테스트 목록 렌더링 (검색 모드 대응)
+========================================================= */
 async function fetchAndRenderTests(query = '') {
     const container = document.querySelector('.test-grid-container');
-    
-    // [NEW] 제어할 섹션들 가져오기
     const heroSection = document.querySelector('.hero-box');
     const recommendSection = document.querySelector('.highlight-tests-carousel');
     const fortuneSection = document.querySelector('.today-fortune');
     const allTestsTitle = document.querySelector('.all-tests .section-title');
-    const allTestsSection = document.querySelector('.all-tests'); // 전체 영역
+    const allTestsSection = document.querySelector('.all-tests');
 
     if (!container) return;
 
-    // 1. 화면 모드 전환 (검색어가 있냐 없냐에 따라)
+    // 검색 여부에 따른 섹션 가시성 제어
     if (query) {
-        // [검색 모드] 배너, 추천, 운세 숨기기
         if(heroSection) heroSection.style.display = 'none';
         if(recommendSection) recommendSection.style.display = 'none';
         if(fortuneSection) fortuneSection.style.display = 'none';
         
-        // 제목 변경 및 스타일 조정
         if(allTestsTitle) allTestsTitle.innerHTML = `'<span style="color:#8F9F85">${query}</span>' 검색 결과`;
-        if(allTestsSection) allTestsSection.style.marginTop = '40px'; // 헤더와 간격 조정
+        if(allTestsSection) allTestsSection.style.marginTop = '40px';
     } else {
-        // [기본 모드] 모든 섹션 다시 보이기
         if(heroSection) heroSection.style.display = 'block';
         if(recommendSection) recommendSection.style.display = 'block';
         if(fortuneSection) fortuneSection.style.display = 'block';
         
-        // 제목 원상복구
         if(allTestsTitle) allTestsTitle.innerText = '전체 심리테스트';
         if(allTestsSection) allTestsSection.style.marginTop = '0';
     }
 
-    // 2. 서버 데이터 요청
+    // 서버 데이터 요청
     const API_ENDPOINT = query 
         ? `${TEST_API_URL}/search?q=${encodeURIComponent(query)}`
         : TEST_API_URL;
@@ -130,7 +111,7 @@ async function fetchAndRenderTests(query = '') {
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const testData = await response.json(); 
 
-        // 결과 없음 처리
+        // 결과가 없을 경우 메시지 표시
         if (!testData || testData.length === 0) {
             container.innerHTML = `<p style="text-align:center; width:100%; padding: 60px 0; color: #888; font-size:1.1rem; grid-column: 1 / -1;">
                 🔍 <strong>'${query}'</strong>에 대한 테스트를 찾을 수 없어요.<br>다른 키워드로 검색해보세요!
@@ -138,7 +119,7 @@ async function fetchAndRenderTests(query = '') {
             return;
         }
 
-        // 결과 렌더링 (카드 생성)
+        // 테스트 카드 목록 생성
         container.innerHTML = testData.map(test => {
             const imageUrl = test.thumbnail ? `${SERVER_URL}${test.thumbnail}` : 'https://via.placeholder.com/400x250/E0E0E0/888888?text=No+Image';
             
@@ -158,9 +139,9 @@ async function fetchAndRenderTests(query = '') {
     }
 }
 
-/* ==========================================================================
- * 4. 인기 3개 고정 노출 (Best 3)
- * ========================================================================== */
+/* =========================================================
+   [4] 인기 테스트 TOP 3 렌더링
+========================================================= */
 async function fetchAndRenderTop3() {
     const track = document.querySelector('.highlight-track');
     if (!track) return;
@@ -176,7 +157,6 @@ async function fetchAndRenderTop3() {
             return;
         }
 
-        // HTML 생성 
         track.innerHTML = recentTests.map((test, index) => {
             const imageUrl = test.thumbnail ? `${SERVER_URL}${test.thumbnail}` : 'https://via.placeholder.com/400x250/E0E0E0/888888?text=No+Image';
             const category = test.category || '성격';
@@ -202,9 +182,9 @@ async function fetchAndRenderTop3() {
     }
 }
 
-/* ==========================================================================
- * 5. 헤더 스크롤 기능
- * ========================================================================== */
+/* =========================================================
+   [5] 헤더 스크롤 이벤트 (스크롤 시 숨기기/보이기)
+========================================================= */
 function initScrollHeader() {
     const header = document.querySelector("header");
     if (!header) return; 
@@ -227,9 +207,9 @@ function initScrollHeader() {
     });
 }
 
-/* ==========================================================================
- * 6. 오늘의 운세 (포춘쿠키) 기능
- * ========================================================================== */
+/* =========================================================
+   [6] 오늘의 운세(포춘쿠키) 기능
+========================================================= */
 function initFortuneCookie() {
     const fortuneBtn = document.querySelector('.fortune-btn');
     const cookieIconArea = document.querySelector('.fortune-cookie-icon');
@@ -255,14 +235,14 @@ function initFortuneCookie() {
         fortuneBtn.innerText = "운세를 확인했습니다!";
         fortuneContainer.innerText = "오늘의 운세가 나왔습니다!";
 
-        // 애니메이션 시작 (CSS에서 bounce 애니메이션 사용 가정)
+        // 애니메이션 효과 추가
         cookieIconArea.classList.add('shaking');
 
         setTimeout(() => {
             const randomIndex = Math.floor(Math.random() * fortuneMessages.length);
             const selectedMessage = fortuneMessages[randomIndex];
 
-            // 쿠키 아이콘을 운세 종이로 교체 
+            // 쿠키 이미지 대신 운세 메시지 결과 표시
             cookieIconArea.innerHTML = `
                 <div class="fortune-paper reveal">
                     <span class="paper-text">${selectedMessage}</span>
@@ -274,19 +254,17 @@ function initFortuneCookie() {
     });
 }
 
-/* ==========================================================================
- * 7. 조회수 증가 함수 (클릭 시 실행)
- * ========================================================================== */
+/* =========================================================
+   [7] 조회수 통계 전송
+========================================================= */
 function countVisit(id) {
-    // 서버에 "이 ID의 조회수를 올려줘"라고 요청
     fetch(`${SERVER_URL}/api/tests/${id}/visit`, { method: 'POST' })
         .catch(err => console.error("조회수 집계 오류:", err));
 }
 
-
-/* ==========================================================================
- * 7. 좋아요 토글 기능
- * ========================================================================== */
+/* =========================================================
+   [8] 좋아요 상태 변경 (토글)
+========================================================= */
 async function toggleLikeStatus(testId, element) {
     const response = await fetch(`${SERVER_URL}/api/tests/${testId}/like`, { method: 'POST' });
     const data = await response.json();
@@ -297,14 +275,13 @@ async function toggleLikeStatus(testId, element) {
     }
     
     if (response.ok) {
-        // UI 즉시 업데이트 (하트 색상 변경 등)
         if (data.liked) {
             alert("좋아요를 눌렀습니다!");
         } else {
             alert("좋아요를 취소했습니다!");
         }
         
-        // 마이페이지라면 목록을 새로고침
+        // 마이페이지에서 호출 시 목록 새로고침
         if (window.location.pathname.includes('mypage.html')) {
             loadUserProfileAndStats();
             fetchLikedTests();

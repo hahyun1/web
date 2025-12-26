@@ -1,59 +1,56 @@
-// [mypage.js]
-
-// 1. API_URL 설정
-// common.js에서 SERVER_URL(var)을 가져다 씁니다.
+// API 기본 경로 설정 (common.js의 SERVER_URL 참조)
 const API_URL = `${SERVER_URL}/api/mypage`; 
 
 document.addEventListener('DOMContentLoaded', initMypage);
 
-// 2. 초기화 함수
+/* ---------------------------------------------------------
+   1. 초기화 함수 (Authentication 확인 및 초기 데이터 로드)
+--------------------------------------------------------- */
 async function initMypage() {
     console.log("마이페이지 초기화 시작...");
 
-    // [체크 포인트] checkAuthentication 함수가 존재하는지 확인
+    // 인증 함수 존재 여부 확인
     if (typeof checkAuthentication !== 'function') {
-        console.error("오류: checkAuthentication 함수를 찾을 수 없습니다. common.js가 제대로 로드되었는지 확인하세요.");
+        console.error("오류: checkAuthentication 함수를 찾을 수 없습니다.");
         alert("시스템 오류: 로그인 정보를 확인할 수 없습니다.");
         return;
     }
 
+    // 로그인 상태 확인 및 유저 정보 취득
     const user = await checkAuthentication(); 
-    if (!user) return; // 비로그인이면 checkAuthentication 내부에서 이동시킴
+    if (!user) return; 
 
-    // 1) 탭 버튼 이벤트 연결
+    // 탭 버튼 클릭 이벤트 바인딩
     const tabBtns = document.querySelectorAll('.tab-btn');
     tabBtns.forEach(button => {
         button.addEventListener('click', () => switchTab(button.dataset.tab));
     });
 
-    // 2) 데이터 로드 (프로필, 좋아요, 내역)
+    // 초기 데이터 로드
     await loadUserProfileAndStats();
     await loadLikedTests(); 
     
-    // 3) 화면 초기화 (좋아요 탭 활성화)
-    // HTML에 'active' 클래스가 이미 있어도 확실하게 하기 위해 실행
+    // 초기 탭 설정 (좋아요 탭 활성화)
     switchTab('liked');
 }
 
-// =======================================================================
-// [API 연동 로직]
-// =======================================================================
 
-// 1. 사용자 프로필 및 통계 로드
+/* ---------------------------------------------------------
+   2. 프로필 및 통계 정보 로드
+--------------------------------------------------------- */
 async function loadUserProfileAndStats() {
     try {
         const response = await fetch(`${API_URL}/stats`);
         const stats = await response.json();
         
         if (response.ok) {
-            // HTML ID: userNickname, likeCount, historyCount
             const nicknameEl = document.getElementById('userNickname');
             const likeCountEl = document.getElementById('likeCount');
             const historyCountEl = document.getElementById('historyCount');
 
             if(nicknameEl) {
                 nicknameEl.innerText = `${stats.nickname}님!`;
-                // 설정 버튼 추가
+                // 설정 바로가기 아이콘 추가
                 nicknameEl.innerHTML += ` <a href="#" onclick="switchTab('settings'); return false;"><i class="fas fa-cog"></i></a>`;
             }
 
@@ -68,11 +65,13 @@ async function loadUserProfileAndStats() {
     }
 }
 
-// 2. 좋아요한 테스트 목록 로드
+
+/* ---------------------------------------------------------
+   3. 좋아요한 테스트 목록 로드
+--------------------------------------------------------- */
 async function loadLikedTests() {
-    // HTML ID: likedTestGrid
     const gridContainer = document.getElementById('likedTestGrid');
-    if (!gridContainer) return; // 에러 방지
+    if (!gridContainer) return;
 
     gridContainer.innerHTML = '<p style="grid-column: 1 / -1; color: #aaa;">로딩 중...</p>';
     
@@ -108,36 +107,38 @@ async function loadLikedTests() {
     }
 }
 
-// 3. 탭 전환 기능
+
+/* ---------------------------------------------------------
+   4. 탭 전환 제어 (UI 업데이트 및 데이터 리로드)
+--------------------------------------------------------- */
 function switchTab(targetId) {
     console.log("탭 전환:", targetId);
 
-    // 모든 버튼과 내용 비활성화
+    // 전체 활성 클래스 제거
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
-    // 선택된 것만 활성화
-    // HTML data-tab 값과 ID가 일치해야 함 (liked, history, settings)
+    // 선택된 탭 및 콘텐츠 활성화
     const targetBtn = document.querySelector(`.tab-btn[data-tab="${targetId}"]`);
     const targetContent = document.getElementById(targetId);
 
     if (targetBtn) targetBtn.classList.add('active');
     if (targetContent) targetContent.classList.add('active');
     
-    // 데이터 로드
+    // 탭 종류별 데이터 로드 처리
     if (targetId === 'liked') loadLikedTests();
     if (targetId === 'history') loadHistory();
     if (targetId === 'settings') loadSettingsForm();
 }
 
 
-// 4. 참여 내역 로드 (결과 표시 기능 추가됨)
+/* ---------------------------------------------------------
+   5. 테스트 참여 내역 로드
+--------------------------------------------------------- */
 async function loadHistory() {
-    // HTML ID: historyList
     const listContainer = document.getElementById('historyList');
     if (!listContainer) return;
 
-    // 로딩 메시지
     listContainer.innerHTML = '<p style="grid-column: 1 / -1; color: #aaa; text-align: center; padding: 20px;">내역 로딩 중...</p>';
 
     try {
@@ -150,16 +151,10 @@ async function loadHistory() {
         }
 
         listContainer.innerHTML = historyData.map(item => {
-            // 날짜 포맷팅
             const dateObj = new Date(item.completed_at);
             const dateStr = `${dateObj.getFullYear()}.${String(dateObj.getMonth() + 1).padStart(2, '0')}.${String(dateObj.getDate()).padStart(2, '0')}`;
-            
-            // 이미지 처리
             const imageUrl = item.thumbnail ? `${SERVER_URL}${item.thumbnail}` : 'https://via.placeholder.com/400x250?text=No+Image';
             const categoryTag = item.category || '기타';
-            
-            // ★★★ [수정됨] 결과 텍스트 가져오기 (DB에서 result_title로 옴)
-            // 값이 없으면 빈 문자열 처리
             const resultText = item.result_title ? item.result_title : "결과 기록 없음";
 
             return `
@@ -169,11 +164,9 @@ async function loadHistory() {
                 </div>
                 <div class="info">
                     <h3 class="test-title">${item.title}</h3>
-                    
                     <div style="margin-top: 6px; font-weight: bold; color: #E76F00; font-size: 0.95rem;">
                         <i class="fas fa-check-circle"></i> ${resultText}
                     </div>
-
                     <p style="font-size: 0.85rem; color: #aaa; margin-top: 6px;">${dateStr} 참여</p>
                 </div>
             </a>
@@ -186,12 +179,14 @@ async function loadHistory() {
     }
 }
 
-// 5. 내 정보 수정 폼 로드
+
+/* ---------------------------------------------------------
+   6. 내 정보 수정 폼 (Settings) 생성 및 로드
+--------------------------------------------------------- */
 async function loadSettingsForm() {
     const container = document.getElementById('settingsContainer'); 
     if(!container) return;
 
-    // 로딩 표시
     container.innerHTML = '<div style="padding: 40px 0; text-align: center; color: #aaa;">정보 불러오는 중...</div>';
     
     const user = await checkAuthentication();
@@ -201,17 +196,13 @@ async function loadSettingsForm() {
         <div style="max-width: 500px; margin: 0 auto; padding: 20px; background: white; border-radius: 15px; box-sizing: border-box;">
             
             <div style="margin-bottom: 40px;">
-                <h3 style="font-family: 'Jua', sans-serif; font-size: 1.2rem; color: #333; margin-bottom: 15px;">
-                    기본 정보 수정
-                </h3>
-                
+                <h3 style="font-family: 'Jua', sans-serif; font-size: 1.2rem; color: #333; margin-bottom: 15px;">기본 정보 수정</h3>
                 <form onsubmit="event.preventDefault(); updateNickname(this);">
                     <div style="margin-bottom: 20px;">
                         <label style="display:block; margin-bottom: 8px; font-weight: bold; color: #555;">아이디</label>
                         <input type="text" value="${user.user_id}" disabled 
                             style="width: 100%; padding: 15px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 8px; color: #888; font-size: 1rem; box-sizing: border-box;">
                     </div>
-
                     <div style="margin-bottom: 10px;">
                         <label for="newNickname" style="display:block; margin-bottom: 8px; font-weight: bold; color: #555;">닉네임</label>
                         <div style="display: flex; gap: 10px; align-items: center;">
@@ -229,21 +220,15 @@ async function loadSettingsForm() {
             <hr style="border: 0; border-top: 1px dashed #ccc; margin: 30px 0;">
 
             <div>
-                <h3 style="font-family: 'Jua', sans-serif; font-size: 1.2rem; color: #333; margin-bottom: 15px;">
-                    비밀번호 변경
-                </h3>
-
+                <h3 style="font-family: 'Jua', sans-serif; font-size: 1.2rem; color: #333; margin-bottom: 15px;">비밀번호 변경</h3>
                 <form onsubmit="event.preventDefault(); updatePassword(this);">
                     <div style="display: flex; flex-direction: column; gap: 15px;">
                         <input type="password" id="currentPw" placeholder="현재 비밀번호" required 
                             style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
-                        
                         <input type="password" id="newPw" placeholder="새 비밀번호 (8자 이상)" required 
                             style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
-                        
                         <input type="password" id="newPwConfirm" placeholder="새 비밀번호 확인" required 
                             style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
-                        
                         <button type="submit" 
                             style="width: 100%; padding: 15px; margin-top: 10px; background: #8D8276; color: white; border: none; border-radius: 8px; font-weight: bold; font-family: 'Jua', sans-serif; font-size: 1.1rem; cursor: pointer;">
                             비밀번호 변경
@@ -255,7 +240,13 @@ async function loadSettingsForm() {
         </div>
     `;
 }
-// 6. 닉네임 변경 요청
+
+
+/* ---------------------------------------------------------
+   7. 닉네임 및 비밀번호 변경 요청 (API 통신)
+--------------------------------------------------------- */
+
+// 닉네임 업데이트
 async function updateNickname(form) {
     const newNickname = form.querySelector('#newNickname').value;
     if (!newNickname) return alert("닉네임을 입력해주세요.");
@@ -281,7 +272,7 @@ async function updateNickname(form) {
     }
 }
 
-// 7. 비밀번호 변경 요청
+// 비밀번호 업데이트
 async function updatePassword(form) {
     const currentPw = form.querySelector('#currentPw').value;
     const newPw = form.querySelector('#newPw').value;

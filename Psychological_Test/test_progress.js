@@ -1,16 +1,17 @@
-// ========================================================
-// 1. 변수 정의
-// ========================================================
-let currentQ = 0;
-let totalScore = 0; // 점수만 누적
-let testId = null;
+/* =========================================================
+   [1] 전역 변수 정의
+========================================================= */
+let currentQ = 0;       // 현재 진행 중인 질문 인덱스
+let totalScore = 0;     // 누적 점수
+let testId = null;      // 현재 테스트 ID
 
-let questions = []; 
-let results = [];   
+let questions = [];     // 서버에서 받아온 질문 목록
+let results = [];       // 서버에서 받아온 결과 목록
 
-// ========================================================
-// 2. 데이터 로드
-// ========================================================
+
+/* =========================================================
+   [2] 페이지 초기화 및 데이터 로드 (DOMContentLoaded)
+========================================================= */
 document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     testId = urlParams.get('id');
@@ -22,15 +23,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        // [1] 테스트 정보 로드
+        // [1] 테스트 기본 정보 로드
         const testRes = await fetch(`http://localhost:3000/api/tests/${testId}`);
         const testRaw = await testRes.json();
-        
-        // 서버 응답 구조 확인 (info 객체)
         const testInfo = testRaw.info || testRaw; 
         document.getElementById('testTitle').innerText = testInfo.title; 
 
-        // [2] 질문 목록 로드
+        // [2] 질문 목록 로드 및 가공
         const qRes = await fetch(`http://localhost:3000/api/questions/${testId}`);
         const qData = await qRes.json();
         
@@ -40,10 +39,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             scores: [q.score_a, q.score_b]
         }));
 
-        // [3] 결과 목록 로드
+        // [3] 결과 기준 목록 로드
         const rRes = await fetch(`http://localhost:3000/api/results/${testId}`);
         results = await rRes.json(); 
 
+        // 초기 화면 설정
         showSection('question');
         showQuestion();
 
@@ -54,11 +54,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-// ========================================================
-// 3. 기능 함수
-// ========================================================
+/* =========================================================
+   [3] 진행 상태 및 UI 제어 함수
+========================================================= */
 
-// 진행 바 업데이트
+// 상단 진행 바(Progress Bar) 업데이트
 function updateProgressBar() {
     const total = questions.length;
     if (total === 0) return;
@@ -74,18 +74,23 @@ function updateProgressBar() {
     }
 }
 
-// 섹션 전환 (질문 <-> 결과)
+// 질문 섹션과 결과 섹션 간의 전환
 function showSection(id) {
     document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
     const target = document.getElementById(id);
     if (target) target.classList.add('active');
 }
 
-// 질문 표시 함수
+
+/* =========================================================
+   [4] 질문 렌더링 및 응답 처리
+========================================================= */
+
+// 현재 질문 표시 및 버튼 생성
 function showQuestion() {
     updateProgressBar();
 
-    // 모든 질문 완료 시 결과 화면으로
+    // 모든 문항을 풀었을 경우 결과 화면으로 이동
     if (currentQ >= questions.length) {
         showResult();
         return;
@@ -98,12 +103,11 @@ function showQuestion() {
     optionsDiv.innerHTML = "";
     document.getElementById("submitContainer").style.display = "none";
 
-    // 버튼 생성
+    // 옵션 버튼 동적 생성 및 스타일 적용
     q.options.forEach((opt, i) => {
         const btn = document.createElement("button");
         btn.innerText = opt;
         
-        // 버튼 스타일링
         btn.style.display = "block";
         btn.style.width = "100%";
         btn.style.padding = "15px";
@@ -114,12 +118,12 @@ function showQuestion() {
         btn.style.backgroundColor = "#fff";
         btn.style.fontSize = "1rem";
         
-        // 호버 효과
+        // 버튼 호버 효과 정의
         btn.onmouseover = () => { btn.style.backgroundColor = "#8F9F85"; btn.style.color = "white"; };
         btn.onmouseout = () => { btn.style.backgroundColor = "#fff"; btn.style.color = "black"; };
 
         btn.onclick = () => {
-            // 점수 누적 후 다음 문제로
+            // 점수 합산 후 다음 문항으로 이동
             totalScore += q.scores[i]; 
             currentQ++;
             showQuestion();
@@ -128,49 +132,53 @@ function showQuestion() {
     });
 }
 
-// 결과 표시 함수 
+
+/* =========================================================
+   [5] 결과 산출 및 서버 저장
+========================================================= */
+
+// 최종 점수에 따른 결과 매칭 및 화면 노출
 function showResult() {
     showSection('result');
     if(document.getElementById("progressContainer")) {
         document.getElementById("progressContainer").style.display = "none";
     }
 
-    // ★ 핵심: 총점이 min ~ max 사이에 있는 결과를 찾음
+    // 총점이 min_score와 max_score 범위 내에 있는 결과 객체 검색
     const finalResult = results.find(r => totalScore >= r.min_score && totalScore <= r.max_score);
 
     if (finalResult) {
-        // 결과 화면 구성
         document.getElementById("resultText").innerHTML = `
             <h2 style="color:#4A3B32; margin-bottom:20px; font-size:2rem;">${finalResult.result_title}</h2>
             <div style="background:#fff; padding:20px; border-radius:15px; border:1px solid #eee;">
                 <p style="font-size:1.1rem; line-height:1.6; color:#555;">${finalResult.result_desc}</p>
             </div>
         `;
-        // 결과를 찾았으니 서버에 저장 요청
+        // 결과 기록 서버 전송
         saveTestResult(testId, totalScore, finalResult.id);
 
     } else {
         document.getElementById("resultText").innerText = "해당 점수에 맞는 결과가 없습니다. (관리자에게 문의하세요)";
-        console.log("총점:", totalScore); // 디버깅용 점수 출력
+        console.log("총점:", totalScore);
     }
     
-    // 다시하기 버튼 링크 (첫 화면으로)
+    // 다시하기 버튼 링크 초기화
     const restartBtn = document.querySelector('.restart-btn');
     if(restartBtn) restartBtn.href = `test_detail.html?id=${testId}`;
 }
 
-// 테스트 저장
+// 테스트 참여 내역 DB 저장 요청
 async function saveTestResult(testId, score, resultId) {
-    if (!testId) return; // 테스트 ID가 없으면 저장 안 함
+    if (!testId) return;
 
     try {
         const response = await fetch(`${SERVER_URL}/api/test/submit`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                test_id: testId,    // 현재 푼 테스트 ID (예: 1)
-                score: score || 0,  // 점수 (없으면 0)
-                result_id: resultId // 나온 결과 ID (DB에 있는 result id)
+                test_id: testId,
+                score: score || 0,
+                result_id: resultId
             }),
         });
         console.log("결과 저장 완료!");

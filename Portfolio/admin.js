@@ -9,7 +9,7 @@ const SERVER_URL = 'http://localhost:3000/api/projects';
 document.addEventListener('DOMContentLoaded', () => {
     initBadgePreview();
     initFilePreview(); 
-    loadAdminProjects(); // 페이지 로드 시 목록 불러오기
+    loadAdminProjects(); 
     
 });
 
@@ -34,7 +34,6 @@ async function submitProject() {
     const isCurrent = document.getElementById('is_current').checked;
     const editId = document.getElementById('edit-id').value;
     
-    // 파일 업로드는 FormData 객체를 사용해야 함
     const formData = new FormData();
     
     formData.append('title', getValue('title'));
@@ -64,7 +63,7 @@ async function submitProject() {
         if (editId) {
             response = await fetch(`${SERVER_URL}/${editId}`, {
                 method: 'PUT',
-                body: formData // 헤더(Content-Type)는 브라우저가 알아서 설정함
+                body: formData 
             });
         } else {
             response = await fetch(SERVER_URL, {
@@ -193,7 +192,7 @@ function startEdit(data) {
         // 서버 주소 + 이미지 경로
         const fullUrl = `http://localhost:3000${data.image_url}`;
         
-        // 확장자로 이미지/비디오 구분 (간단한 방식)
+        // 확장자로 이미지/비디오 구분 
         if (data.image_url.match(/\.(mp4|webm)$/i)) {
             videoPreview.src = fullUrl;
             videoPreview.style.display = 'block';

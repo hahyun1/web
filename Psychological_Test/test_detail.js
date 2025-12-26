@@ -1,5 +1,8 @@
+/* =========================================================
+   [1] 페이지 초기화 및 테스트 상세 데이터 로드
+========================================================= */
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. [중요] 페이지 로드 시 헤더의 로그인 상태부터 확인 (이게 없으면 비로그인처럼 보임)
+    // 헤더 로그인 상태 확인
     checkLoginStatus();
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -16,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const heartBtn = document.querySelector('.heart-btn');
 
     try {
-        // 2. 테스트 정보 가져오기
+        // 테스트 정보 및 질문 데이터 페칭
         const response = await fetch(`http://localhost:3000/api/tests/${testId}`);
         if (!response.ok) throw new Error("데이터 불러오기 실패");
 
@@ -24,28 +27,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         const testInfo = data.info; 
         const questions = data.questions;
 
-        // 화면 채우기
+        // UI 요소 데이터 바인딩
         document.getElementById('detailTitle').innerText = testInfo.title; 
         document.getElementById('detailDesc').innerText = testInfo.description; 
         document.getElementById('categoryTag').innerText = testInfo.category || '성격';
 
+        // 썸네일 이미지 설정
         if (testInfo.thumbnail) {
             detailImage.src = `http://localhost:3000${testInfo.thumbnail}`;
         } else {
             detailImage.src = 'img/default.png';
         }
 
+        // 문항 수 및 참여자 수 표시
         document.getElementById('questionCount').innerText = `${questions.length}개`; 
         
         const visitCount = testInfo.visit_count || 0;
         const formattedCount = visitCount.toLocaleString();
-        
         document.getElementById('participantCount').innerText = formattedCount; 
         
-        // 하단 참여자 수 텍스트 (ID 확인 필요)
         const bottomText = document.getElementById('likeCountText') || document.getElementById('participantCountBottom');
         if(bottomText) bottomText.innerText = formattedCount;
 
+        // 시작 버튼 링크 설정 (AI 테스트 여부 확인)
         const startBtn = document.getElementById('startBtn');
         if (parseInt(testId) === AI_TEST_ID) {
             startBtn.href = "face_test.html"; 
@@ -53,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             startBtn.href = `test_progress.html?id=${testId}`;
         }
 
-        // 3. 좋아요 상태 확인 및 버튼 이벤트
+        // 좋아요 상태 확인 및 이벤트 등록
         checkLikeStatus(testId, heartBtn);
         heartBtn.onclick = () => toggleLike(testId, heartBtn);
 
@@ -62,7 +66,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// --- [추가] 헤더 로그인 상태 변경 함수 ---
+
+/* =========================================================
+   [2] 사용자 인증 및 로그인 상태 관리
+========================================================= */
+
+// 헤더 로그인/로그아웃 UI 전환
 async function checkLoginStatus() {
     try {
         const response = await fetch(`${SERVER_URL}/api/auth/status`);
@@ -71,21 +80,18 @@ async function checkLoginStatus() {
         const loginGroup = document.querySelector('.login-group');
         
         if (data.loggedIn) {
-            // [로그인 상태] 닉네임과 로그아웃 버튼 표시
             loginGroup.innerHTML = `
             <li><a href="mypage.html" style="font-weight:bold; color:#8F9F85;">마이페이지</a></li> 
             /
             <li><a href="#" onclick="handleLogout()" style="color:#8D8276;">로그아웃</a></li>
             `;
-        } else {
-            // [비로그인 상태] 기존 로그인/회원가입 링크 유지 
         }
     } catch (err) {
         console.error("로그인 상태 확인 실패:", err);
     }
 }
 
-// 마이페이지 접속 시 인증 확인 및 리다이렉션 (URL접근 막기)
+// 페이지 접근 권한 확인 (인증 미들웨어 역할)
 async function checkAuthentication() {
     const response = await fetch(`${SERVER_URL}/api/auth/status`);
     const data = await response.json();
@@ -98,22 +104,27 @@ async function checkAuthentication() {
     return data.user;
 }
 
-// 로그아웃 함수 (전역)
+// 로그아웃 처리
 async function handleLogout() {
     try {
         await fetch(`${SERVER_URL}/api/logout`, { method: 'POST' });
         alert("로그아웃 되었습니다.");
-        location.reload(); // 페이지 새로고침해서 상태 반영
+        location.reload(); 
     } catch (err) {
         console.error("로그아웃 오류:", err);
     }
 }
 
-// --- 좋아요 상태 확인 ---
+
+/* =========================================================
+   [3] 좋아요(찜하기) 기능 관리
+========================================================= */
+
+// 특정 테스트의 좋아요 여부 확인 및 아이콘 렌더링
 async function checkLikeStatus(testId, btn) {
     try {
         const res = await fetch(`http://localhost:3000/api/tests/${testId}/like/status`);
-        if(!res.ok) return; // 404 방지
+        if(!res.ok) return;
 
         const data = await res.json();
         
@@ -127,7 +138,7 @@ async function checkLikeStatus(testId, btn) {
     }
 }
 
-// --- 좋아요 토글 ---
+// 좋아요 추가 및 취소 토글
 async function toggleLike(testId, btn) {
     try {
         const res = await fetch(`http://localhost:3000/api/tests/${testId}/like`, { method: 'POST' });

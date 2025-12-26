@@ -91,7 +91,7 @@ header.hide { transform: translateY(-100%); }
 /* 상세 페이지 메인 레이아웃 */
 /* ================================================= */
 .detail-main {
-    max-width: 600px; /* 모바일 친화적인 폭 */
+    max-width: 600px; 
     margin: 40px auto;
     background: var(--white);
     border-radius: 30px;

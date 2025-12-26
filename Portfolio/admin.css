@@ -6,7 +6,7 @@
 .admin-input, 
 .admin-textarea {
     width: 100%;
-    background-color: var(--white); /* 배경은 흰색 또는 밝은 색 */
+    background-color: var(--white); 
     border: 1px solid var(--line-color);
     border-radius: 6px;
     padding: 12px 15px;
@@ -39,7 +39,7 @@
 .admin-textarea:focus {
     outline: none;
     border-color: var(--point-green);
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1); /* 연한 초록색 번짐 */
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1); 
 }
 
 /* 텍스트 영역 크기 조정 */
@@ -69,7 +69,7 @@
 .tech-stack-preview {
     margin-top: 10px;
     padding: 15px;
-    background-color: #f9f9f9; /* 잘 보이도록 연한 회색 배경 */
+    background-color: #f9f9f9; 
     border: 1px dashed var(--line-color);
     border-radius: 8px;
     min-height: 50px;
@@ -82,7 +82,7 @@
 
 .tech-stack-preview .badge {
     display: inline-block;
-    margin: 0; /* 배지 간격은 gap으로 제어 */
+    margin: 0; 
 }
 
 
@@ -228,7 +228,7 @@
 .btn-delete:hover { background-color: #ffcdd2; }
 
 /* ==========================================================================
-   5. 파일 업로드 및 미리보기 (추가됨)
+   5. 파일 업로드 및 미리보기 
    ========================================================================== */
 
 /* 파일 입력창 스타일 */
@@ -253,7 +253,7 @@ input[type="file"].admin-input {
 #img-preview, 
 #video-preview {
     max-width: 100%;
-    max-height: 300px; /* 너무 길어지지 않게 제한 */
+    max-height: 300px; 
     border-radius: 6px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     margin-top: 5px;

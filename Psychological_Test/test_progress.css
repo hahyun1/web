@@ -42,7 +42,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Jua 폰트 적용 (제목, 로고, 메뉴, 버튼, 질문) */
 h1, h2, h3,
 .logo-text,
 .menu-group a,
@@ -232,7 +231,7 @@ header.hide {
     background: #eee;
     height: 20px;
     border-radius: 10px;
-    overflow: hidden; /* 내부 바가 둥근 모서리를 튀어나가지 않게 함 */
+    overflow: hidden; 
 }
 
 /* 실제 움직이는 바 */

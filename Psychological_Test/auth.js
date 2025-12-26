@@ -40,7 +40,7 @@ async function handleSignup() {
     const user_id = document.getElementById('signId').value;
     const nickname = document.getElementById('signNick').value;
     const password = document.getElementById('signPw').value;
-    const passwordConfirm = document.getElementById('signPwConfirm').value; // 확인용 비번 추가
+    const passwordConfirm = document.getElementById('signPwConfirm').value; // 확인용 비번
 
     if(!user_id || !nickname || !password || !passwordConfirm) return alert("모든 항목을 입력해주세요.");
     

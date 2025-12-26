@@ -104,19 +104,19 @@ async function deleteTest(id) {
 async function editTest(id) {
     const res = await fetch(`http://localhost:3000/api/tests/${id}`);
     const data = await res.json();
-    const info = data.info; // 서버 응답 구조 { info: {...}, questions: [...] }
+    const info = data.info; 
 
     // 폼 값 채우기
     document.getElementById('current-test-id').value = info.id;
     document.getElementById('test_title').value = info.title;
     document.getElementById('test_desc').value = info.description;
 
-    // [NEW] 기존 카테고리 값 선택 (없으면 기본값 '성격')
+    // 기존 카테고리 값 선택 (없으면 기본값 '성격')
     document.getElementById('test_category').value = info.category || '성격';
     
     // UI 변경 (등록 모드 -> 수정 모드)
     document.getElementById('test-form-title').innerText = "Edit Test";
-    const btn = document.querySelector('.submit-btn'); // 첫 번째 submit 버튼
+    const btn = document.querySelector('.submit-btn');
     btn.innerHTML = '<i class="fas fa-edit"></i> 테스트 수정하기';
     btn.onclick = uploadTest; 
 
@@ -176,7 +176,6 @@ function showTab(type) {
     const rTab = document.getElementById('tab-results');
     const buttons = document.querySelectorAll('.project-info-col .btn-group button, .project-info-col button.submit-btn');
 
-    // 간단한 스타일 토글 (active 클래스 활용 권장)
     if(type === 'q') {
         qTab.style.display = 'block';
         rTab.style.display = 'none';
@@ -185,7 +184,6 @@ function showTab(type) {
         rTab.style.display = 'block';
     }
 }
-
 
 /* ==========================================================================
    [3] 질문(Questions) 관리 로직
@@ -218,7 +216,7 @@ async function loadQuestions(testId) {
 }
 
 /**
- * 질문 등록 (보기/점수 포함 7개 필드 전송)
+ * 질문 등록 
  */
 async function addQuestion() {
     const testId = document.getElementById('current-test-id').value;

@@ -1184,21 +1184,21 @@ nav ul.nav-list > li:hover > a::after { width: 100%; }
         gap: 8px;
     
         /* 디자인 */
-        background: rgba(255,255,255,0.9); /* 배경: 흰색 약간 투명 */
+        background: rgba(255,255,255,0.9); 
         padding: 8px 15px; 
         border-radius: 20px; 
         box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
     
         /* 폰트 */
-        font-family: 'Gowun Dodum', sans-serif; /* 프로젝트 폰트 사용 */
+        font-family: 'Gowun Dodum', sans-serif; 
         font-size: 0.9rem; 
-        color: var(--primary-text); /* 기본 텍스트 색상 사용 */
+        color: var(--primary-text); 
         font-weight: 500;
     }
     
     /* 아이콘 스타일 */
     .visit-counter .fas.fa-eye {
-        color: var(--point-green); /* 포인트 색상 (#4CAF50 대신 변수 사용) */
+        color: var(--point-green); 
     }
     
     /* 텍스트 스타일 */

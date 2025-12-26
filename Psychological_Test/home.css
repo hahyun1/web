@@ -121,7 +121,7 @@ header.hide { transform: translateY(-100%); }
 .hero-img-container { flex: 1; display: flex; justify-content: flex-end; }
 .yellow-box {
     width: 400px; height: 400px;
-    background-color: var(--yellow-point); /* 노란색 배경 */
+    background-color: var(--yellow-point); 
     border-radius: 40px;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 20px 20px 0px rgba(0,0,0,0.03);
@@ -328,7 +328,7 @@ header.hide { transform: translateY(-100%); }
 
 .input-wrapper input {
     width: 100%;
-    padding: 15px 15px 15px 45px; /* 아이콘 공간 확보 */
+    padding: 15px 15px 15px 45px; 
     border: 1px solid #EBE5CE;
     border-radius: 12px;
     font-size: 1rem;
@@ -364,7 +364,7 @@ header.hide { transform: translateY(-100%); }
 .auth-btn {
     width: 100%;
     padding: 16px;
-    background-color: #7A8A70; /* 사진 속 쑥색 */
+    background-color: #7A8A70; 
     color: white;
     border: none;
     border-radius: 12px;
@@ -418,7 +418,7 @@ header.hide { transform: translateY(-100%); }
 
 /* 비밀번호 확인 성공 시 아이콘 색상 변경 */
 .input-wrapper.valid-match .input-icon {
-    color: var(--point-green, #8F9F85) !important; /* 초록색 체크 */
+    color: var(--point-green, #8F9F85) !important; 
 }
 
 /* 비밀번호 입력창 아이콘 색상 기본 설정 */
@@ -426,7 +426,7 @@ header.hide { transform: translateY(-100%); }
     transition: color 0.3s;
 }
 
-/* 비밀번호 틀림 시 테두리 색상 (선택 사항) */
+/* 비밀번호 틀림 시 테두리 색상 */
 .input-wrapper.invalid input {
     border-color: #ff6b6b;
 }
