@@ -220,37 +220,42 @@ header.hide {
 
 
 /* =======================================================
-   4. 진행 바
+   4. 진행 바 (Progress Bar)
    ======================================================= */
 
-
-/* 진행 바 컨테이너 */
+/* 전체를 감싸는 박스 */
 #progressContainer {
-    width: 80%;
-    margin: 20px auto;
-    background: #eee;
-    height: 20px;
-    border-radius: 10px;
-    overflow: hidden; 
+    width: 90%;
+    max-width: 600px;
+    margin: 30px auto 10px auto;
 }
 
-/* 실제 움직이는 바 */
+/* 실제 막대기가 지나가는 길  */
+.progress-track {
+    width: 100%;
+    height: 12px;          
+    background-color: #EBE5CE;
+    border-radius: 20px;
+    overflow: hidden;       
+}
+
+/* 실제 움직이는 초록색 막대 */
 #progressBar {
     width: 0%;
     height: 100%;
-    background: #8F9F85; /* 기존 포인트 녹색 색상 */
-    border-radius: 10px;
-    transition: width 0.3s; /* 부드러운 움직임 효과 */
+    background: linear-gradient(90deg, #A6B49D, var(--point-green));
+    border-radius: 20px;
+    transition: width 0.4s ease;
 }
 
-/* 퍼센트 텍스트 레이블 */
+/* 퍼센트 글자 */
 #progressLabel {
     text-align: center;
-    font-size: 0.9rem;
-    color: #666;
-    margin-top: 5px; /* 바와 텍스트 사이 간격 살짝 추가 */
+    font-size: 1rem;
+    font-family: 'Jua', sans-serif;
+    color: var(--secondary-text);
+    margin-top: 10px;
 }
-
 
 /* =======================================================
    5. 질문 및 콘텐츠 섹션
