@@ -63,7 +63,9 @@ function updateProgressBar() {
     const total = questions.length;
     if (total === 0) return;
 
-    let percent = Math.round(((currentQ + 1) / total) * 100);
+    // 완료된 문항 수 / 전체 문항 수 (0%부터 시작)
+    let percent = Math.round((currentQ / total) * 100); 
+    
     if (percent > 100) percent = 100;
 
     const bar = document.getElementById('progressBar');
@@ -92,7 +94,10 @@ function showQuestion() {
 
     // 모든 문항을 풀었을 경우 결과 화면으로 이동
     if (currentQ >= questions.length) {
-        showResult();
+        // 100%가 된 진행바를 잠시 보여준 뒤 결과로 이동
+        setTimeout(() => {
+            showResult();
+        }, 500); // 0.5초 대기
         return;
     }
 
