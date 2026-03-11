@@ -24,7 +24,13 @@ app.use(session({
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
+//app.use(express.static(__dirname));
+
+// Vercel 환경에서 각 폴더를 명확하게 정적 폴더로 지정
+app.use('/Portfolio', express.static(path.join(process.cwd(), 'Portfolio')));
+app.use('/Psychological_Test', express.static(path.join(process.cwd(), 'Psychological_Test')));
+app.use('/img', express.static(path.join(process.cwd(), 'img')));
+app.use(express.static(process.cwd())); // 루트 파일들용
 
 // 업로드 파일 정적 경로 설정
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
