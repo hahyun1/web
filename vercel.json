@@ -1,8 +1,25 @@
 {
     "version": 2,
     "rewrites": [
-      { "source": "/api/(.*)", "destination": "/api/index.js" },
-      { "source": "/Psychological_Test/(.*)", "destination": "/Psychological_Test/$1" },
-      { "source": "/(.*)", "destination": "/$1" }
+      {
+        "source": "/Psychological_Test/(.*)",
+        "destination": "/Psychological_Test/$1"
+      },
+      {
+        "source": "/Portfolio/(.*)",
+        "destination": "/Portfolio/$1"
+      },
+      {
+        "source": "/img/(.*)",
+        "destination": "/img/$1"
+      },
+      {
+        "source": "/api/(.*)",
+        "destination": "server.js"
+      },
+      {
+        "source": "/(.*)",
+        "destination": "/index.html"
+      }
     ]
   }
