@@ -24,16 +24,13 @@ app.use(session({
 
 app.use(cors());
 app.use(express.json());
-//app.use(express.static(__dirname));
 
-// Vercel 환경에서 각 폴더를 명확하게 정적 폴더로 지정
-app.use('/Portfolio', express.static(path.join(process.cwd(), 'Portfolio')));
-app.use('/Psychological_Test', express.static(path.join(process.cwd(), 'Psychological_Test')));
-app.use('/img', express.static(path.join(process.cwd(), 'img')));
-app.use(express.static(process.cwd())); // 루트 파일들용
-
-// 업로드 파일 정적 경로 설정
+// 💡 [수정 1] Vercel이 이해할 수 있도록 정적 폴더 경로를 __dirname으로 통일
+app.use('/Portfolio', express.static(path.join(__dirname, 'Portfolio')));
+app.use('/Psychological_Test', express.static(path.join(__dirname, 'Psychological_Test')));
+app.use('/img', express.static(path.join(__dirname, 'img')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(__dirname));
 
 
 /* =========================================================
@@ -592,10 +589,13 @@ app.post('/api/tests/:id/like', (req, res) => {
 // 기본 메인 페이지 제공
 app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'index.html')); });
 
-// 포트폴리오 정적 파일 서빙
-app.use('/Portfolio', express.static(path.join(__dirname, 'Portfolio')));
+// 💡 [수정 2] 포트폴리오 정적 파일 서빙
+//app.use('/Portfolio', express.static(path.join(__dirname, 'Portfolio')));
 
 // 지정된 포트에서 서버 대기 시작
 app.listen(PORT, () => {
     console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
 });
+
+// 💡 [수정 3] Vercel이 서버를 제대로 인식하도록 필수 코드 추가
+module.exports = app;

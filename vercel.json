@@ -1,17 +1,9 @@
 {
     "version": 2,
-    "builds": [
-      { "src": "server.js", "use": "@vercel/node" },
-      { "src": "index.html", "use": "@vercel/static" },
-      { "src": "Portfolio/**", "use": "@vercel/static" },
-      { "src": "Psychological_Test/**", "use": "@vercel/static" },
-      { "src": "img/**", "use": "@vercel/static" }
-    ],
-    "routes": [
-      { "src": "/Psychological_Test/(.*)", "dest": "/Psychological_Test/$1" },
-      { "src": "/Portfolio/(.*)", "dest": "/Portfolio/$1" },
-      { "src": "/img/(.*)", "dest": "/img/$1" },
-      { "src": "/api/(.*)", "dest": "server.js" },
-      { "src": "/(.*)", "dest": "/index.html" }
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "/server.js"
+      }
     ]
   }
